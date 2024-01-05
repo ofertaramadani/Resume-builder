@@ -1,0 +1,39 @@
+.header {
+    background-color:#f7f9fb;
+    .container {
+        margin:0 auto;
+    }
+    &__logo{
+        font-size: 35px;
+        font-weight:600;
+        letter-spacing: -1.8px;
+        color: #263fa1;
+    }
+    &__wrapper{
+        padding: 25px 0px;
+        display: flex;
+        font-family: 'Poppins';
+        justify-content: space-between;
+        align-items: center;
+        & img{
+            width: 50px;
+            height: 50px;
+        }
+    }
+    &__nav{
+        display: flex;
+        gap: 30px;
+        & a {
+            text-decoration: none;
+            color:#333333;
+            text-transform: uppercase;
+            font-weight: 500;
+            transition: 0.2s ease-in-out;
+            &:hover{
+                color:#13287e;
+                scale: 1.1;
+                cursor: pointer;
+            }
+        }
+    }
+}

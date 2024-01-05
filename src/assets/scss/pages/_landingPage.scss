@@ -1,0 +1,122 @@
+.container {
+    max-width: $container;
+    width: 100%;
+    margin: 0 auto;
+}
+.wrapper{
+    padding-bottom: 100px;
+    padding-top: 100px;
+}
+.home {
+  &__hero{
+    font-family: 'Poppins';
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    &-img{
+        width: 50%;
+        & img {
+            width: 100%;
+            height: 100%;
+        }
+    }
+    &-info{
+        width: 400px;
+        & h1 {
+            font-size: 45px;
+            line-height: 60px;
+            margin-bottom: 30px;
+            font-weight:600;
+            color: #13287e;
+        }
+        & p{
+            font-size: 18px;
+            line-height: 30px;
+            color: #888888;
+            margin-bottom: 30px;
+        }
+    }
+  }
+}
+
+.qualities{
+    display: flex;
+    justify-content: space-between;
+    &__wrapper {
+        padding: 100px 0;
+        background-color:#f7f9fb;
+    }
+    &__left {
+        & img {
+            width: 400px;
+            object-fit: contain;
+        }
+    }
+    &__right{
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        gap: 20px;
+        & h2 {
+            font-size: 30px;
+            line-height: 30px;
+            text-transform: uppercase;
+            margin-bottom: 30px;
+            font-weight:600;
+            color: #13287e;
+            font-family: 'Poppins';
+        }
+        & h5 {
+            display: flex;
+            gap: 15px;
+            font-size: 20px;
+            line-height: 20px;
+            margin-bottom: 30px;
+            font-weight:600;
+            color: #212529;
+            font-family: 'Poppins';
+            &::before {
+                content: url('~@/assets/icons/checkmark.svg');
+                width: 20px;
+                height: 20px;
+            }
+        }
+    }
+}
+
+.templates{
+    font-family: 'Poppins';
+    &__wrapper{
+        padding: 100px 0;
+    }
+    &__title{
+        font-size: 45px;
+        line-height: 60px;
+        font-weight:600;
+        color: #13287e;
+        text-align: center;
+        margin-bottom: 20px;
+    }
+    &__text{
+        text-align: center;
+        font-size: 18px;
+        line-height: 30px;
+        color: #888888;
+        margin-bottom: 50px;
+    }
+    &__group{
+        display: flex;
+        gap:50px;
+    }
+    &__single{
+        display: flex;
+        gap: 50px;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        & img {
+            object-fit: fill;
+            width: 100%;
+        }
+    }
+}
