@@ -1,7 +1,8 @@
-import { createApp } from 'vue'
 import { createRouter, createWebHistory } from 'vue-router'
 import landingPage from '../views/landingPage'
-import App from '../App.vue'; 
+import loginPage from '../views/loginPage'
+import signupPage from '../views/signupPage'
+import dashboardPage from '../views/dashboardPage'
 
 
 const routes = [
@@ -9,6 +10,21 @@ const routes = [
     path: '/',
     name: 'landingPage',
     component: landingPage,
+  },
+  {
+    path: '/login',
+    name: 'loginPage',
+    component: loginPage,
+  },
+  {
+    path: '/signup',
+    name: 'signupPage',
+    component: signupPage,
+  },
+  {
+    path: '/dashboard',
+    name: 'dashboardPage',
+    component: dashboardPage,
   },
 ];
 
@@ -22,8 +38,5 @@ router.beforeEach((to, from, next) => {
   next();
 });
 
-const app = createApp(App);
-app.use(router);
-app.mount('#app');
 
 export default router;

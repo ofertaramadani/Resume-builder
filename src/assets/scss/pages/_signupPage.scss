@@ -1,0 +1,36 @@
+.signup {
+    font-family: 'Poppins';
+    &__wrapper {
+        margin:0px auto;
+        height: 90vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+    &__title{
+        & h2{
+            font-size: 35px;
+            line-height: 60px;
+            margin-bottom: 30px;
+            font-weight:600;
+            color: #13287e;
+        }
+    }
+    &__credentials{
+        display: flex;
+        flex-direction: column;
+        gap: 25px;
+    }
+    &__submit{
+        margin-top: 40px;
+        display: flex;
+        justify-content: center;
+    }
+}
+
+.error-message{
+    margin-top: 5px;
+    font-size: 12px;
+    color: #ff3333;
+}
