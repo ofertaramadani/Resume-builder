@@ -1,0 +1,39 @@
+.personal-details {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+    margin-top: 30px;
+    &__input {
+        width: 100%;
+        & input {
+            font-family: 'Poppins';
+            padding: 12px 10px;
+            background-color: #EFF2F9;
+            border:none;
+            width: 100%;
+        }
+        & p {
+            color:#828ba2;
+            font-family: 'Poppins';
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+        &-photo {
+           width: 20px;
+           height: 20px;
+        }
+    }
+    &__photo {
+        display: flex;
+        align-items: center;
+        & input {
+            background-color: unset;
+            border: none !important;
+        }
+        & img {
+            width: 25px;
+            height: 25px;
+        }
+    }
+}
+

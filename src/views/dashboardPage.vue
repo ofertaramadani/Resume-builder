@@ -14,7 +14,7 @@
                 </div>
             </div>
             <div class="dashboard__add-template" v-if="isDashboardVisible">
-                <div class="dashboard__create">
+                <div class="dashboard__create" @click="goToTemplate()">
                     <p>Add a new resume</p>
                     <img src="../assets/icons/add-template.svg" alt="">
                 </div>
@@ -31,10 +31,12 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, inject } from 'vue';
 
+const router = inject('router');
 const isDashboardVisible = ref(false);
 const isTemplatesVisible = ref(false);
+
 const openDashboard=()=>{
     isTemplatesVisible.value=false;
     isDashboardVisible.value=true;
@@ -42,6 +44,9 @@ const openDashboard=()=>{
 const openTemplates=()=>{
     isDashboardVisible.value=false;
     isTemplatesVisible.value=true;
+}
+const goToTemplate=()=>{
+    router.push('/resume');
 }
 onMounted(()=> {
     isDashboardVisible.value=true;

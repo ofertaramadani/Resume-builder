@@ -1,0 +1,59 @@
+.skills {
+    display: flex;
+    font-family: 'Poppins';
+    gap: 20px;
+    flex-direction: column;
+    margin-top: 30px;
+    &__default {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+    }
+    &__skill {
+        padding: 5px 10px;
+        background-color: #eff2f9;
+        border-radius: 20px;
+        transition: 0.2s ease-in-out;
+        &:hover {
+            cursor: pointer;
+            background-color: #d3d7de;
+            & p::after {
+                color: white;
+            }
+        }
+        & p {
+            font-size: 14px;
+            display: flex;
+            gap: 10px;
+            &::after {
+                content: '+';
+                color: #bbbdc2;
+                
+            }
+        }
+    }
+    &__add {
+        display: flex;
+        align-items: center;
+        width: 100%;
+        gap: 10px;
+        &-skill {
+            background-color: unset;
+            width: 150px;
+            border: 1px solid transparent;
+            &:hover {
+                border: 1px solid #eff2f9;
+            }
+        }
+        &-input {
+            width: 100%;
+            input {
+                font-family: 'Poppins';
+                padding: 12px 10px;
+                background-color: #EFF2F9;
+                border:none;
+                width: 50%;
+            }
+        }
+    }
+}

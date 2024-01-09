@@ -1,0 +1,30 @@
+.employment {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+    margin-top: 30px;
+    &__title, &__description{
+        grid-column: span 2; 
+    }
+    &__input {
+        width: 100%;
+        & input, textarea {
+            font-family: 'Poppins';
+            padding: 12px 10px;
+            background-color: #EFF2F9;
+            border:none;
+            width: 100%;
+        }
+        & textarea {
+            resize: none;
+            height: 150px;
+        }
+        & p {
+            color:#828ba2;
+            font-family: 'Poppins';
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+    }
+
+}

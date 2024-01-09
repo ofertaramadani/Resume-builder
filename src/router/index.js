@@ -3,6 +3,7 @@ import landingPage from '../views/landingPage'
 import loginPage from '../views/loginPage'
 import signupPage from '../views/signupPage'
 import dashboardPage from '../views/dashboardPage'
+import createResumePage from '../views/createResumePage'
 
 
 const routes = [
@@ -25,6 +26,11 @@ const routes = [
     path: '/dashboard',
     name: 'dashboardPage',
     component: dashboardPage,
+  },
+  {
+    path: '/resume',
+    name: 'createResumePage',
+    component: createResumePage,
   },
 ];
 
