@@ -24,11 +24,11 @@ export default {
     text-decoration: none;
 }
 textarea, input {
-  border-bottom: 1px solid #eff2f9 !important;
+  border: 1px solid #eff2f9 !important;
   border-radius: 5px;
 }
 textarea:focus, input:focus{
     outline: none;
-    border-bottom: 1px solid #263fa1 !important;
+    border: 1px solid #263fa1 !important;
 }
 </style>

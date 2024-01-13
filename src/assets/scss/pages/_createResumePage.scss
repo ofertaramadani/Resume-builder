@@ -2,6 +2,7 @@
     display: flex;
     &__back {
         font-family: 'Poppins';
+        transition:0.3s ease-in-out;
         font-size: 20px;
         color: #6f6f74;
         display: flex;
@@ -12,12 +13,26 @@
         padding-top: 50px;
         &:hover {
             cursor: pointer;
+            & img {
+                transform: scale(1.1);
+            }
         }
     }
     &__template {
         width: 50%;
         background-color: #303463;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
         height: 100vh;
+        &-wrap {
+            transform: scale(0.7); /* Adjust the scale factor as needed */
+        }
+        &-btn {
+          position: absolute;
+          bottom:35px;
+        }
     }
     &__active {
         & h2 {
