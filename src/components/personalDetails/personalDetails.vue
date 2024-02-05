@@ -3,7 +3,7 @@
   <div class="personal-details">
     <div class="personal-details__input">
       <p class="personal-details__input-title">Title</p>
-      <input type="text" :value="personalDetailsStore.userTitle" @input="updateUserTitle" />
+      <input type="text" v-model="resumePersonalDetails.title" @input="updateUserTitle" />
     </div>
     <div class="personal-details__input">
       <p class="personal-details__input-title">Photo</p>
@@ -11,68 +11,72 @@
         <input type="file" accept="image/jpeg/png
         
         " @change="handlePhotoUpload" />
-        <img v-if="personalDetailsStore.userPhoto" :src="personalDetailsStore.userPhoto" alt="User Photo" />
+        <img v-if="personalDetailsStore.userPhoto" :src="resumePersonalDetails.photo" alt="User Photo" />
       </div>
     </div>
     <div class="personal-details__input">
       <p class="personal-details__input-title">First Name</p>
-      <input type="text" :value="personalDetailsStore.userFirstname" @input="updateUserFirstname" />
+      <input type="text" v-model="resumePersonalDetails.firstname" @input="updateUserFirstname" />
     </div>
     <div class="personal-details__input">
       <p class="personal-details__input-title">Last Name</p>
-      <input type="text" :value="personalDetailsStore.userLastname" @input="updateUserLastname" />
+      <input type="text" v-model="resumePersonalDetails.lastname" @input="updateUserLastname" />
     </div>
     <div class="personal-details__input">
       <p class="personal-details__input-title">Email</p>
-      <input type="text" :value="personalDetailsStore.userEmail" @input="updateUserEmail" />
+      <input type="text" v-model="resumePersonalDetails.email" @input="updateUserEmail" />
     </div>
     <div class="personal-details__input">
       <p class="personal-details__input-title">Phone</p>
-      <input type="text" :value="personalDetailsStore.userPhone" @input="updateUserPhone" />
+      <input type="text" v-model="resumePersonalDetails.phone" @input="updateUserPhone" />
     </div>
     <div class="personal-details__input">
       <p class="personal-details__input-title">Country</p>
-      <input type="text" :value="personalDetailsStore.userCountry" @input="updateUserCountry" />
+      <input type="text" v-model="resumePersonalDetails.country" @input="updateUserCountry" />
     </div>
     <div class="personal-details__input">
       <p class="personal-details__input-title">City</p>
-      <input type="text" :value="personalDetailsStore.userCity" @input="updateUserCity" />
+      <input type="text" v-model="resumePersonalDetails.city" @input="updateUserCity" />
     </div>
-    <!-- ... add other personal details fields -->
   </div>
 </template>
 
 <script setup>
 import { usePersonalDetailsStore } from '@/store/personalDetailsStore';
-
+import { useResumeStore } from '@/store/cvStore';
+import { onBeforeMount, reactive } from 'vue';
 const personalDetailsStore = usePersonalDetailsStore();
-
-const updateUserTitle = (event) => {
-  personalDetailsStore.setUserTitle(event.target.value);
+const resumeStore = useResumeStore();
+var resumePersonalDetails = reactive({});
+onBeforeMount(()=>{
+  resumePersonalDetails = resumeStore.currentResume
+})
+const updateUserTitle = () => {
+  resumeStore.updatedResume.title = resumePersonalDetails.title
 };
 
-const updateUserFirstname = (event) => {
-  personalDetailsStore.setUserFirstname(event.target.value);
+const updateUserFirstname = () => {
+  resumeStore.updatedResume.firstname = resumePersonalDetails.firstname
 };
 
-const updateUserLastname = (event) => {
-  personalDetailsStore.setUserLastname(event.target.value);
+const updateUserLastname = () => {
+  resumeStore.updatedResume.lastname = resumePersonalDetails.lastname
 };
 
-const updateUserEmail = (event) => {
-  personalDetailsStore.setUserEmail(event.target.value);
+const updateUserEmail = () => {
+  resumeStore.updatedResume.email = resumePersonalDetails.email
 };
 
-const updateUserPhone = (event) => {
-  personalDetailsStore.setUserPhone(event.target.value);
+const updateUserPhone = () => {
+  resumeStore.updatedResume.phone = resumePersonalDetails.phone
 };
 
-const updateUserCountry = (event) => {
-  personalDetailsStore.setUserCountry(event.target.value);
+const updateUserCountry = () => {
+  resumeStore.updatedResume.country = resumePersonalDetails.country
 };
 
-const updateUserCity = (event) => {
-  personalDetailsStore.setUserCity(event.target.value);
+const updateUserCity = () => {
+  resumeStore.updatedResume.city = resumePersonalDetails.city
 };
 
 const handlePhotoUpload = (event) => {

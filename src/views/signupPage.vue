@@ -12,6 +12,10 @@
               <inputElement :input-value="userSurname" @update:input-value="userSurname = $event" :input-type="'text'" :input-placeholder="'Surname'" />
               <div v-if="shouldShowSurnameError()" class="error-message">{{ surnameError() }}</div>
             </div>
+            <div class="signup__credentials-username">
+              <inputElement :input-value="userUsername" @update:input-value="userUsername = $event" :input-type="'text'" :input-placeholder="'Username'" />
+              <div v-if="shouldShowUsernameError()" class="error-message">{{ usernameError() }}</div>
+            </div>
             <div class="signup__credentials-email">
               <inputElement :input-value="userEmail" @update:input-value="userEmail = $event" :input-type="'text'" :input-placeholder="'Email'" />
               <div v-if="shouldShowEmailError()" class="error-message">{{ emailError() }}</div>
@@ -34,7 +38,8 @@
   </template>
   
   <script setup>
-  import { ref } from 'vue';
+  import { ref, inject } from 'vue';
+  import { auth } from '@/store/auth';
   import inputElement from '../components/input/inputElement.vue';
   import buttonElement from '../components/button/buttonElement.vue';
   
@@ -43,7 +48,10 @@
   const userEmail = ref('');
   const userPassword = ref('');
   const confirmPassword = ref('');
-  
+  const userUsername = ref('');
+
+  const router = inject('router');
+  const store=auth();
   const formSubmitted = ref(false);
   
   const nameError = () => {
@@ -56,6 +64,12 @@
   const surnameError = () => {
     if (formSubmitted.value && !userSurname.value) {
       return 'Surname is required';
+    }
+    return null;
+  };
+  const usernameError = () => {
+    if (formSubmitted.value && !userUsername.value) {
+      return 'Username is required';
     }
     return null;
   };
@@ -93,21 +107,23 @@
   const shouldShowEmailError = () => formSubmitted.value && !!emailError();
   const shouldShowPasswordError = () => formSubmitted.value && !!passwordError();
   const shouldShowConfirmPasswordError = () => formSubmitted.value && !!confirmPasswordError();
+  const shouldShowUsernameError = () => formSubmitted.value && !!usernameError();
+
   
-  const handleSubmit = () => {
+  const handleSubmit = async() => {
     formSubmitted.value = true;
     if (
       !nameError() &&
       !surnameError() &&
       !emailError() &&
       !passwordError() &&
-      !confirmPasswordError()
+      !confirmPasswordError() &&
+      !usernameError()
     ) {
-      // Your logic for handling a valid form submission
-      console.log('Form submitted successfully');
-    } else {
-      // Your logic for handling an invalid form submission
-      console.log('Form submission failed. Please check errors.');
+      await store.register({ email: userEmail.value, password: userPassword.value, firstName: userName.value, lastName:userSurname.value, passwordConfirm:confirmPassword.value, username:userUsername.value, role:'4'});
+      router.push('/dashboard');
+    } else {     
+      console.log('Form submission failed. Please check erroors.');
     }
   };
   </script>

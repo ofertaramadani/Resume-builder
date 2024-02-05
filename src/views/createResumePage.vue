@@ -1,5 +1,5 @@
 <template>
-    <div class="create-resume">
+    <div class="create-resume" v-if="templateLoaded">
         <div class="create-resume__fields">
             <div class="create-resume__back" @click="goBack()"><img src="../assets/icons/back.svg"/>Go back</div>
             <div class="create-resume__field">
@@ -8,7 +8,6 @@
                 <img :src="openTabs['personal'] ? require('../assets/icons/black-minus.svg') : require('../assets/icons/plus.svg')"/>
               </div>
                 <personalDetails 
-                :userTitle="userTitle" 
                 v-show="openTabs['personal']"
                 />
            </div>
@@ -18,7 +17,7 @@
                     <h2>Professional summary</h2>
                     <img :src="openTabs['summary'] ? require('../assets/icons/black-minus.svg') : require('../assets/icons/plus.svg')"/>
                   </div>
-                    <textarea placeholder="Add your professional summary here"  v-show="openTabs['summary']" class="create-resume__professional-text"></textarea>
+                    <textarea placeholder="Add your professional summary here"  v-show="openTabs['summary']" class="create-resume__professional-text" @input="updateProfessionalSummary" v-model="professionalSummary"></textarea>
                 </div>
             <div class="break"></div>
                 <div class="create-resume__field">
@@ -79,24 +78,27 @@
           <img src="../assets/icons/download-icon.svg" @click="generatePDF" class="create-resume__template-btn">
         </div>
     </div>
+    <div class="create-resume__loader" v-else>
+        <loaderElement />
+    </div>
 </template>
 
 <script setup>
+import Vue3Html2pdf from 'vue3-html2pdf'
+import { reactive, inject, ref,onBeforeMount } from 'vue';
 import personalDetails from '../components/personalDetails/personalDetails.vue';
 import educationDetails from '../components/educationDetails/educationDetails.vue';
 import employmentHistory from '../components/employmentHistory/employmentHistory.vue';
 import skillsDetails from '../components/skillsDetails/skillsDetails.vue';
 import socialDetails from '../components/socials/socialDetails.vue';
 import templateElement from '../components/template/template.vue';
-import Vue3Html2pdf from 'vue3-html2pdf'
-import { reactive, inject, ref } from 'vue';
+import loaderElement from '../components/loaderElement/loaderElement.vue';
 
-const html2Pdf = ref(null);
-function generatePDF(){
-  console.log(html2Pdf.value);
-  const g= html2Pdf.value.generatePdf();
-  console.log('fd',g)
-}
+import { useResumeStore } from '@/store/cvStore';
+import { useEducationStore } from '@/store/educationStore';
+
+const router = inject('router');
+
 const openTabs = reactive({
     personal: true,
     summary: false,
@@ -105,16 +107,47 @@ const openTabs = reactive({
     skills: false
 });
 
-const router = inject('router');
+const templateLoaded = ref(false);
+const resume = useResumeStore();
+const educationStore = useEducationStore();
+const professionalSummary = ref();
+
+const updateProfessionalSummary = () => {
+  resume.currentResume.professionalSummary = professionalSummary.value
+  resume.updatedResume.professionalSummary = professionalSummary.value
+};
 
 function openTab(tabName) {
-    console.log(openTabs[tabName])
     openTabs[tabName] = !openTabs[tabName]
 }
 
 const goBack=()=>{
   router.push('/dashboard');
 }
+
+const html2Pdf = ref(null);
+async function generatePDF(){
+  try {
+    if(resume.currentResume.uuid) {
+      resume.updateResume(resume.updatedResume)
+    }else{
+      resume.createResume(resume.currentResume)  
+    }
+    // html2Pdf.value.generatePdf();
+  }catch(error){
+    console.error(error)
+    alert('Sorry could not save cv')
+  }
+  
+}
+
+onBeforeMount(async()=> {
+   await resume.getResume();
+   await educationStore.getEducation(resume.currentResume.id);
+   professionalSummary.value = resume.currentResume.professionalSummary
+   templateLoaded.value = true
+})
+
 </script>
 <style lang="scss" scoped>
 @import '../assets/scss/index.scss';

@@ -22,13 +22,17 @@
   </template>
   
   <script setup>
-  import { ref } from 'vue';
+  import { ref, inject } from 'vue';
   import inputElement from '../components/input/inputElement.vue';
   import buttonElement from '../components/button/buttonElement.vue';
-  
+  import { auth } from "@/store/auth";
+
+  const router = inject('router');
+  const store = auth();
+
   const userEmail = ref('');
   const userPassword = ref('');
-  
+
   const formSubmitted = ref(false);
   
   const emailError = () => {
@@ -55,18 +59,18 @@
   const shouldShowEmailError = () => formSubmitted.value && !!emailError();
   const shouldShowPasswordError = () => formSubmitted.value && !!passwordError();
   
-  const handleSubmit = () => {
+  const handleSubmit = async() => {
     formSubmitted.value = true;
     if (!emailError() && !passwordError()) {
-      // Your logic for handling a valid form submission
-      console.log('Form submitted successfully');
+      await store.login({ email: userEmail.value, password: userPassword.value });
+      router.push('/dashboard');
     } else {
-      // Your logic for handling an invalid form submission
       console.log('Form submission failed. Please check errors.');
     }
   };
   </script>
-  
+
+
   <style lang="scss" scoped>
   @import '../assets/scss/index.scss';
   @import '../assets/scss/pages/loginPage';

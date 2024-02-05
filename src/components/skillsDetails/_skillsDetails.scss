@@ -37,13 +37,14 @@
         width: 100%;
         gap: 10px;
         &-skill {
-            background-color: unset;
-            width: 150px;
-            border: 1px solid transparent;
+            width: 30px;
+            height: 30px;
+            transition: 0.2s ease-in-out;
             &:hover {
-                border: 1px solid #eff2f9;
+             cursor: pointer;
+             scale: 1.3;
             }
-        }
+         }
         &-input {
             width: 100%;
             input {
@@ -51,7 +52,7 @@
                 padding: 12px 10px;
                 background-color: #EFF2F9;
                 border:none;
-                width: 50%;
+                width: 100%;
             }
         }
     }

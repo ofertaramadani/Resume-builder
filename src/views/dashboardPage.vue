@@ -3,12 +3,12 @@
         <div class="dashboard__wrapper">
             <div class="menu">
                 <div class="menu__logo">
-                    resume.
+                    <router-link to="/">resume.</router-link>
                 </div>
                 <div class="menu__items">
                     <div class="menu__item" @click="openDashboard" :class="{'active-tab':isDashboardVisible}"><img :src="isDashboardVisible ? require('../assets/icons/dashboard-white.svg'): require('../assets/icons/dashboard.svg')" alt=""><p>Dashboard</p></div>
                     <div class="menu__item" @click="openTemplates" :class="{'active-tab':isTemplatesVisible}"><img :src="isTemplatesVisible ? require('../assets/icons/add-template-white.svg'): require('../assets/icons/add-template.svg')" alt=""><p>Templates</p></div>
-                    <div class="menu__item menu__logout">
+                    <div class="menu__item menu__logout" @click="logout">
                     <img src="../assets/icons/logout.svg" alt=""><p>Log out</p>
                 </div>
                 </div>
@@ -20,7 +20,8 @@
                 </div>
                 <div class="dashboard__existing">
                     <h2>Existing resumes</h2>
-                    <div class="dashboard__existing-resumes"></div>
+                    <div class="dashboard__existing-resumes">
+                    </div>
                 </div>
             </div>
             <div class="dashboard__templates" v-if="isTemplatesVisible" @click="openTemplates">
@@ -32,6 +33,9 @@
 
 <script setup>
 import { ref, onMounted, inject } from 'vue';
+import { auth } from "@/store/auth";
+
+const store = auth();
 
 const router = inject('router');
 const isDashboardVisible = ref(false);
@@ -47,6 +51,9 @@ const openTemplates=()=>{
 }
 const goToTemplate=()=>{
     router.push('/resume');
+}
+const logout=()=> {
+    store.logout();
 }
 onMounted(()=> {
     isDashboardVisible.value=true;
