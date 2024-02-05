@@ -3,6 +3,7 @@ import landingPage from '../views/landingPage'
 import loginPage from '../views/loginPage'
 import signupPage from '../views/signupPage'
 import dashboardPage from '../views/dashboardPage'
+import createResumePage from '../views/createResumePage'
 
 
 const routes = [
@@ -26,6 +27,11 @@ const routes = [
     name: 'dashboardPage',
     component: dashboardPage,
   },
+  {
+    path: '/resume',
+    name: 'createResumePage',
+    component: createResumePage,
+  },
 ];
 
 const router = createRouter({
@@ -34,8 +40,13 @@ const router = createRouter({
 });
 
 router.beforeEach((to, from, next) => {
+  const token = localStorage.getItem('accessToken');
   window.scrollTo(0, 0);
-  next();
+  if(token && token !== '' && token !== undefined && (to.name === 'loginPage' || to.name === 'signupPage')) {
+    next(from)
+  } else {
+    next();
+  }
 });
 
 

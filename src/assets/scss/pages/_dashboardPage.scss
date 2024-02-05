@@ -1,5 +1,8 @@
 .dashboard{
     font-family: 'Poppins';
+    &__templates{
+        margin: 50px;
+    }
     &__wrapper{
         display: flex;
     }
@@ -27,6 +30,17 @@
     }
     &__existing{
         margin-top: 100px;
+        width: 100%;
+        &-resumes{
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            height: 400px;
+        }
+        height: 400px;
+        &-template {
+            scale: 0.3;
+        }
         & h2 {
             font-size: 24px;
             font-weight:600;
@@ -60,7 +74,7 @@
     &__item{
         display: flex;
         align-items: center;
-        gap: 20px;
+        gap: 10px;
         &:hover{
             cursor: pointer;
         }
@@ -79,4 +93,8 @@
     & p {
         color:#ffffff;
     }
+}
+
+router-link {
+    text-decoration: none;
 }

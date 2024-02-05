@@ -1,5 +1,5 @@
 <template>
-  <navbarElement v-if="1==2" />
+  <navbarElement v-if="$route.path === '/' || $route.path === '/login' || $route.path === '/signup'" />
   <router-view />
 </template>
 
@@ -23,4 +23,13 @@ export default {
 .routerLink{
     text-decoration: none;
 }
+textarea, input {
+  border: 1px solid #eff2f9 !important;
+  border-radius: 5px;
+}
+textarea:focus, input:focus{
+    outline: none;
+    border: 1px solid #263fa1 !important;
+}
+
 </style>
