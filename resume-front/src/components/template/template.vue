@@ -85,42 +85,23 @@
 
 <script setup>
 import { useResumeStore } from '@/store/cvStore';
-import { onBeforeMount, reactive, ref, watch} from 'vue';
+import { watch, ref} from 'vue';
 
 const resumeStore = useResumeStore(); 
-var experiences = reactive([]);
+var experiences = ref([]);
 var educations = ref([]);
-var socials = reactive([]);
-var skills = reactive([]);
-var resume = reactive({});
+var socials = ref([]);
+var skills = ref([]);
+var resume = ref({});
 
-watch(resumeStore.currentResume,async(newVal) => {
-    if(resumeStore.addedEducations.length > 0){
-        educations.value = newVal.educations.concat(resumeStore.addedEducations)
-    }
-    else {
-        educations.value = newVal.educations
-    }
-    experiences.value = newVal.experiences
-}, { deep: true })
 
-watch(resumeStore.addedEducations,async(newVal) => {
-    if(resumeStore.currentResume.educations.length > 0) {
-        educations.value = newVal.concat(resumeStore.currentResume.educations)
-        console.log('aa',educations.value)
-    }
-    else {
-        educations.value = newVal
-    }
-}, { deep: true })
-
-onBeforeMount(()=> {
-    resume = resumeStore.currentResume;
-    experiences = resumeStore.currentResumeExperiences;
-    educations.value = resumeStore.currentResumeEducations.concat(resumeStore.addedEducations)
-    socials = resumeStore.currentResumeSocials;
-    skills = resumeStore.currentResumeSkills;
-})
+watch(() => resumeStore.currentResume, (newResume) => {
+    resume.value = newResume;
+    experiences.value = newResume.experiences;
+    educations.value = newResume.educations;
+    socials.value = newResume.socials;
+    skills.value = newResume.skills;
+}, { immediate: true, deep: true });
 
 </script>
 

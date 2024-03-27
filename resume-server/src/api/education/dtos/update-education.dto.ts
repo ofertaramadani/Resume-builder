@@ -4,6 +4,10 @@ import { IsString, IsOptional } from "class-validator";
 export class UpdateEducationDto {
     @ApiProperty()
     @IsOptional()
+    id: number;
+    
+    @ApiProperty()
+    @IsOptional()
     @IsString()
     title: string;
 

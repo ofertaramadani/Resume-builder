@@ -3,6 +3,10 @@ import { IsOptional, IsString } from "class-validator";
 
 export class CreateEducationDto {
     @ApiProperty()
+    @IsOptional()
+    id: number;
+
+    @ApiProperty()
     @IsString()
     @IsOptional()
     title: string;

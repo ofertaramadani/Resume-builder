@@ -4,6 +4,7 @@ import { IsDefined, IsOptional, IsString, ValidateNested } from "class-validator
 import { CreateEducationDto } from "src/api/education/dtos";
 import { CreateExperienceDto } from "src/api/experience/dtos";
 import { CreateSkillDto } from "src/api/skill/dtos/skill.dto";
+import { TemplateDto } from "src/api/templates/dtos/templates.dto";
 
 export class UpdateCvDto {
     @ApiProperty()
@@ -77,5 +78,12 @@ export class UpdateCvDto {
     @IsDefined()
     @IsOptional()
     socials: CreateSkillDto[];
+
+    @ApiProperty({ type: [TemplateDto] })
+    @ValidateNested({ each: true })
+    @Type(() => TemplateDto)
+    @IsDefined()
+    @IsOptional()
+    templates: TemplateDto[];
 
   }

@@ -25,7 +25,11 @@
                 </div>
             </div>
             <div class="dashboard__templates" v-if="isTemplatesVisible" @click="openTemplates">
-                qitu templates
+                <ul>
+                    <li v-for="template in allTemplates.data" :key="template.id">
+                        <img :src="require(`../../src/assets/images/${template.image}`)" alt="">
+                    </li>
+                </ul>
             </div>
         </div>
     </div>
@@ -34,12 +38,14 @@
 <script setup>
 import { ref, onMounted, inject } from 'vue';
 import { auth } from "@/store/auth";
-
+import { useTemplatesStore } from '@/store/templateStore'
 const store = auth();
+const templateStore = useTemplatesStore();
 
 const router = inject('router');
 const isDashboardVisible = ref(false);
 const isTemplatesVisible = ref(false);
+const allTemplates = ref('');
 
 const openDashboard=()=>{
     isTemplatesVisible.value=false;
@@ -55,8 +61,10 @@ const goToTemplate=()=>{
 const logout=()=> {
     store.logout();
 }
-onMounted(()=> {
+onMounted(async()=> {
     isDashboardVisible.value=true;
+    await templateStore.getTemplates();
+    allTemplates.value = templateStore.templates;
 })
 </script>
 

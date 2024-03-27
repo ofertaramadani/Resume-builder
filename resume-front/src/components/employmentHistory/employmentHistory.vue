@@ -30,6 +30,9 @@
         <p class="employment__input-title">Description</p>
         <textarea :value="experience.description" readonly ></textarea>
       </div>
+      <div class="employment__remove" @click="removeExperience(experience)">
+          <img src="../../assets/icons/trash-icon.svg" alt="">
+        </div>
   </div>
 </div>
   <div class="employment">
@@ -70,6 +73,10 @@ let isOpen = ref([]);
 
 function openEdu(index) {
 isOpen.value[index] = !isOpen.value[index];
+}
+
+function removeExperience(experience) {
+  resumeStore.removeExperience(experience)
 }
 
 const resumeStore = useResumeStore();

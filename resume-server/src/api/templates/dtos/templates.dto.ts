@@ -9,4 +9,8 @@ export class TemplateDto {
     @ApiProperty()
     @IsString()
     path: string;
+
+    @ApiProperty()
+    @IsString()
+    image: string;
   }

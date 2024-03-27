@@ -51,31 +51,31 @@ onBeforeMount(()=>{
   resumePersonalDetails = resumeStore.currentResume
 })
 const updateUserTitle = () => {
-  resumeStore.updatedResume.title = resumePersonalDetails.title
+  resumeStore.currentResume.title = resumePersonalDetails.title
 };
 
 const updateUserFirstname = () => {
-  resumeStore.updatedResume.firstname = resumePersonalDetails.firstname
+  resumeStore.currentResume.firstname = resumePersonalDetails.firstname
 };
 
 const updateUserLastname = () => {
-  resumeStore.updatedResume.lastname = resumePersonalDetails.lastname
+  resumeStore.currentResume.lastname = resumePersonalDetails.lastname
 };
 
 const updateUserEmail = () => {
-  resumeStore.updatedResume.email = resumePersonalDetails.email
+  resumeStore.currentResume.email = resumePersonalDetails.email
 };
 
 const updateUserPhone = () => {
-  resumeStore.updatedResume.phone = resumePersonalDetails.phone
+  resumeStore.currentResume.phone = resumePersonalDetails.phone
 };
 
 const updateUserCountry = () => {
-  resumeStore.updatedResume.country = resumePersonalDetails.country
+  resumeStore.currentResume.country = resumePersonalDetails.country
 };
 
 const updateUserCity = () => {
-  resumeStore.updatedResume.city = resumePersonalDetails.city
+  resumeStore.currentResume.city = resumePersonalDetails.city
 };
 
 const handlePhotoUpload = (event) => {

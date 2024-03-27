@@ -10,7 +10,12 @@ export const useResumeStore = defineStore('resume', {
       socials:[],
       skills:[]
     },
-    updatedResume:{},
+    updatedResume:{
+      educations:[],
+      experiences:[],
+      socials:[],
+      skills:[]
+    },
     addedEducations:[],
     currentResumeEducations:[],
     currentResumeExperiences:[],
@@ -33,11 +38,12 @@ export const useResumeStore = defineStore('resume', {
     },
     async updateResume(resume){
       try {
+        console.log('resume',resume)
         const cvId = this.currentResume.id
-        console.log(cvId,'cvid')
-        return await api({ requiresAuth: true }).put(
+        let res =  await api({ requiresAuth: true }).put(
           `/cv/${cvId}`, resume
         );
+        console.log('On update response:', res)
       } catch (error) {
         console.error(
           error
@@ -62,21 +68,28 @@ export const useResumeStore = defineStore('resume', {
       }
     },
 
-    async addEducation(education){
-      try {
-      if(this.currentResume.id !== undefined){
-        const cvId = this.currentResume.id
-        await api({requiresAuth:true}).post(
-          `education/${cvId}`,education
-        )
-        this.addedEducations.push(education)
-      } else {
-        this.currentResume.educations.push(education)
-      }
-    } catch(error){
-      console.error(error)
-    }
-      
+    removeEducation(education){
+      this.currentResume.educations = this.currentResume.educations.filter(edu => {
+        return edu !== education;
+      })
+    },
+    removeExperience(experience){
+      this.currentResume.experiences = this.currentResume.experiences.filter(ex => {
+        return ex !== experience;
+      })
+    },
+    removeSkill(skill){
+      this.currentResume.skills = this.currentResume.skills.filter(sk => {
+        return sk !== skill;
+      })
+    },
+    removeSocial(social){
+      this.currentResume.socials = this.currentResume.socials.filter(sc => {
+        return sc !== social;
+      })
+    },
+    addEducation(education){
+      this.currentResume.educations.push(education)
     },
     addExperience(experience){
       this.currentResume.experiences.push(experience)

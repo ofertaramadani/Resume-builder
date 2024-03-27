@@ -1,6 +1,6 @@
 import { Cv } from "src/api/cv/entities/cv.entity";
 import { AuditEntity } from "src/common/db/customBaseEntites/AuditEntity";
-import { Column, Entity, JoinColumn, ManyToOne } from "typeorm";
+import { Column, Entity, Index, JoinColumn, ManyToOne } from "typeorm";
 
 
 @Entity('education')
@@ -22,6 +22,11 @@ export class Education extends AuditEntity{
 
     @Column()
     description: string;
+
+    @Index()
+    @Column({nullable: true})
+    cv_id: number;
+
 
     @ManyToOne(() => Cv, cv => cv.educations)
     @JoinColumn({ name: 'cv_id' })

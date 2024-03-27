@@ -2,6 +2,18 @@
     font-family: 'Poppins';
     &__templates{
         margin: 50px;
+        & ul {
+            display: flex;
+            & li {
+                height: 300px;
+                width: 200px;
+                & img {
+                    width: 100%;
+                    height: 100%;
+                    object-fit: cover;
+                }
+            }
+        }
     }
     &__wrapper{
         display: flex;
@@ -31,16 +43,16 @@
     &__existing{
         margin-top: 100px;
         width: 100%;
-        &-resumes{
-            display: flex;
-            justify-content: center;
-            align-items: flex-start;
-            height: 400px;
-        }
-        height: 400px;
-        &-template {
-            scale: 0.3;
-        }
+        // &-resumes{
+        //     display: flex;
+        //     justify-content: center;
+        //     align-items: flex-start;
+        //     height: 400px;
+        // }
+        // height: 400px;
+        // &-template {
+        //     scale: 0.3;
+        // }
         & h2 {
             font-size: 24px;
             font-weight:600;

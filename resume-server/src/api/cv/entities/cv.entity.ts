@@ -50,5 +50,6 @@ export class Cv extends AuditEntity {
   @ManyToOne(() => User, user => user.cvs)
   @JoinColumn({ name: 'user_id' }) 
   user: User;
+  template: any;
 
 }

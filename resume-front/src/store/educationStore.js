@@ -36,18 +36,18 @@ export const useEducationStore = defineStore('education', {
       }
     },
 
-    async removeEducation(cvId,educationId) {
-      try {
-      await api({ requiresAuth:true }).delete(
-        `/education/${cvId}/${educationId}`
-      );
-      const indexToRemove = this.educations.findIndex(edu => edu.id === educationId);
-      if (indexToRemove !== -1) {
-        this.educations.splice(indexToRemove, 1);
-      }
-      }catch(error){
-        console.error(error)
-      }
-    },
+    // async removeEducation(cvId,educationId) {
+    //   try {
+    //   await api({ requiresAuth:true }).delete(
+    //     `/education/${cvId}/${educationId}`
+    //   );
+    //   const indexToRemove = this.educations.findIndex(edu => edu.id === educationId);
+    //   if (indexToRemove !== -1) {
+    //     this.educations.splice(indexToRemove, 1);
+    //   }
+    //   }catch(error){
+    //     console.error(error)
+    //   }
+    // },
   },
 });

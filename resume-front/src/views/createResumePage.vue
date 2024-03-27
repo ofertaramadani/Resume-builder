@@ -129,7 +129,7 @@ const html2Pdf = ref(null);
 async function generatePDF(){
   try {
     if(resume.currentResume.uuid){
-      resume.updateResume(resume.updatedResume)
+      resume.updateResume(resume.currentResume)
     }
     else{
       resume.createResume(resume.currentResume)  

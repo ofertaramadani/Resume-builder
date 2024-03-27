@@ -30,7 +30,7 @@
           <p class="education__input-title">Description</p>
           <textarea :value="education.description" readonly ></textarea>
         </div>
-        <div class="education__remove" @click="removeEducation(education.id,index)">
+        <div class="education__remove" @click="removeEducation(education)">
           <img src="../../assets/icons/trash-icon.svg" alt="">
         </div>
     </div>
@@ -68,14 +68,11 @@
   <script setup>
 import {reactive, ref, watch } from 'vue';
 import { useResumeStore } from '@/store/cvStore';
-import { useEducationStore } from '@/store/educationStore';
 let resumeStore = useResumeStore();
-let educationsStore = useEducationStore();
 let allEducations = ref([]);
 let isOpen = ref([]);
 
 watch(resumeStore.currentResume,async(newVal) => {
-  console.log('im in1')
     if(resumeStore.addedEducations.length > 0){
         allEducations.value = newVal.educations.concat(resumeStore.addedEducations)
     }
@@ -84,24 +81,8 @@ watch(resumeStore.currentResume,async(newVal) => {
     }
 }, { deep: true, immediate: true })
 
-watch(resumeStore.addedEducations,async(newVal) => {
-  console.log('im in')
-    if(resumeStore.currentResume.educations.length > 0) {
-        allEducations.value = newVal.concat(resumeStore.currentResume.educations)
-    }
-    else {
-        allEducations.value = newVal
-    }
-}, { deep: true, immediate: true })
-
-async function removeEducation(educationId) {
-  // if(educationId !== undefined) {
-    const cvId = resumeStore.currentResume.id
-    await educationsStore.removeEducation(cvId, educationId)
-  // }
-  // console.log('BEFORE',resumeStore.currentResume.educations)
-  // resumeStore.currentResume.educations.splice(index,1)
-  // console.log('AFTER',resumeStore.currentResume.educations.splice(index,1))
+function removeEducation(education) {
+  resumeStore.removeEducation(education)
 }
 
 function openEdu(index) {

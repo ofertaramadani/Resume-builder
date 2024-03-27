@@ -9,4 +9,7 @@ export class Templates extends AuditEntity{
 
     @Column()
     path: string;
+
+    @Column()
+    image: string;
 }

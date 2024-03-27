@@ -11,6 +11,15 @@
     &__wrap {
         margin-top: 20px;
     }
+    &__remove {
+        grid-column: 1 / -1;
+        text-align: center;
+        transition: 0.2s ease-in-out;
+        &:hover {
+            cursor: pointer;
+            scale: 1.1;
+        }
+    }
     &__tab {
         width: 100%;
         padding: 8px 8px 8px 8px;
