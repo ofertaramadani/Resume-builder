@@ -75,13 +75,21 @@
         font-weight:600;
         letter-spacing: -1.8px;
         color: white;
-        margin-bottom: 40px;
+        & a{
+            text-decoration: none;
+            color: white;
+        }
     }
     &__items{
+        margin-top: 30px;
         display: flex;
         flex-direction: column;
-        gap: 20px;
         height: 100%;
+        &-second {
+            gap:20px;
+            display: flex;
+            flex-direction: column;
+        }
     }
     &__item{
         display: flex;

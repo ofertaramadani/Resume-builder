@@ -1,14 +1,19 @@
 import api from "@/api/api";
 import router from "@/router";
 import { defineStore } from "pinia";
- 
+
 export const auth = defineStore("auth", {
   state: () => ({
+    isLoggedIn: false,
   }),
- 
+
   actions: {
-    setUserToken(token){
-        localStorage.setItem('accessToken', token);
+    setLoginStatus(isLoggedIn){
+      this.isLoggedIn = isLoggedIn
+    },
+    setUserToken(token) {
+      localStorage.setItem("accessToken", token);
+      this.setLoginStatus(true)
     },
     async login(credentials) {
       try {
@@ -16,7 +21,7 @@ export const auth = defineStore("auth", {
           "/auth/login",
           credentials
         );
-        this.setUserToken(res.data.accessToken)
+        this.setUserToken(res.data.accessToken);
       } catch (error) {
         console.error(
           "LOGIN ER                                                                                                  ROR:",
@@ -25,21 +30,20 @@ export const auth = defineStore("auth", {
       }
     },
     async register(credentials) {
-        try {
-          const res = await api({ requiresAuth: false }).post(
-            "/auth/register",
-            credentials
-          );
-          this.setUserToken(res.data.accessToken)
-        } catch (error) {
-          console.error(
-            error
-          );
-        }
-      },
-    logout(){
-        localStorage.removeItem('accessToken')
-        router.push('/login')
-    }
+      try {
+        const res = await api({ requiresAuth: false }).post(
+          "/auth/register",
+          credentials
+        );
+        this.setUserToken(res.data.accessToken);
+      } catch (error) {
+        console.error(error);
+      }
+    },
+    logout() {
+      localStorage.removeItem("accessToken");
+      this.setLoginStatus(false);
+      router.push("/login");
+    },
   },
 });
