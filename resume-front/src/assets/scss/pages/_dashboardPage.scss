@@ -1,12 +1,24 @@
 .dashboard{
     font-family: 'Poppins';
+    background-color: rgb(255, 251, 251);
+    overflow: hidden;
+    &__add-template{
+        margin:50px 50px 50px 300px;
+        min-height: 100vh;
+    }
     &__templates{
-        margin: 50px;
+        overflow: scroll;
+        margin:50px 50px 0px 300px;
+        width: 100%;
+        min-height: 100vh;
         & ul {
             display: flex;
+            flex-wrap: wrap;
+            gap: 50px;
             & li {
                 height: 300px;
                 width: 200px;
+                box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
                 & img {
                     width: 100%;
                     height: 100%;
@@ -17,9 +29,6 @@
     }
     &__wrapper{
         display: flex;
-    }
-    &__add-template{
-     margin: 50px;
     }
     &__create{
         width: 200px;
@@ -64,6 +73,8 @@
 
 .menu{
     font-family: 'Poppins';
+    position: fixed;
+    top: 0;
     padding: 20px;
     width: 270px;
     background-color: #0f1e5a;

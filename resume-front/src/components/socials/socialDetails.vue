@@ -1,7 +1,7 @@
 <template>
     <div class="socials">
         <div class="socials__default">
-            <div class="socials__social" v-for="(link, index) in links" :key="index"><a href="#">{{ link }}</a></div>
+            <div class="socials__social" v-for="(link, index) in links" :key="index" @click="removeSocial(link,index)"><p>{{ link }}</p></div>
         </div>
         <div class="socials__add">
             <div class="socials__add-input">
@@ -16,16 +16,21 @@
 
 <script setup>
 import { ref } from 'vue';
-import { useSocialsStore } from '@/store/socailsStore';
-const socialsStore = useSocialsStore();
+import {useResumeStore} from '@/store/cvStore';
+const resumeStore = useResumeStore();
+
 const links = ref([]);
 const socialLink = ref('');
 const addSocial=()=> {
     if(socialLink.value !== '') {
-    socialsStore.addSocial({name:socialLink.value})
-    links.value.push(socialLink.value)
-    socialLink.value = ''
+        resumeStore.addSocial({name:socialLink.value})
+        links.value.push(socialLink.value)
+        socialLink.value = ''
     }
+}
+const removeSocial=(social,index)=>{
+    resumeStore.removeSocial(social)
+    links.value.splice(index,1)
 }
 
 </script>

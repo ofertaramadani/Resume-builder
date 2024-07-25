@@ -60,9 +60,13 @@
         @click="openTemplates"
       >
         <ul>
-          <li v-for="template in allTemplates.data" :key="template.id">
+          <li
+            v-for="template in allTemplates"
+            :key="template"
+            @click="chooseTemplate(template)"
+          >
             <img
-              :src="require(`../../src/assets/images/${template.image}`)"
+              :src="require(`../../src/assets/images/${template}.png`)"
               alt=""
             />
           </li>
@@ -82,7 +86,13 @@ const templateStore = useTemplatesStore();
 const router = inject("router");
 const isDashboardVisible = ref(false);
 const isTemplatesVisible = ref(false);
-const allTemplates = ref("");
+const allTemplates = ref([
+  "template_1",
+  "template_2",
+  "template_3",
+  "template_4",
+  "template_5",
+]);
 
 const openDashboard = () => {
   isTemplatesVisible.value = false;
@@ -98,10 +108,15 @@ const goToTemplate = () => {
 const logout = () => {
   store.logout();
 };
+function chooseTemplate(template) {
+  console.log("clicked");
+  templateStore.storeTemplate(template);
+  router.push("/resume");
+}
 onMounted(async () => {
   isDashboardVisible.value = true;
   await templateStore.getTemplates();
-  allTemplates.value = templateStore.templates;
+  // allTemplates.value = templateStore.templates;
 });
 </script>
 

@@ -1,7 +1,7 @@
 <template>
     <div class="skills">
         <div class="skills__default">
-            <div class="skills__skill" v-for="(skill, index) in skillList" :key="index">
+            <div class="skills__skill" v-for="(skill, index) in skillList" :key="index" @click="removeSkill(skill,index)">
                 <p>{{ skill }}</p>
             </div>
         </div>
@@ -32,6 +32,11 @@ const addSkill=()=> {
     skillList.value.push(skillName.value);
     skillName.value=''
     }
+}
+
+const removeSkill=(skill,index)=>{
+    resumeStore.removeSkill(skill)
+    skillList.value.splice(index,1)
 }
 
 

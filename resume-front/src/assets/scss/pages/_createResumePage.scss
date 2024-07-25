@@ -1,5 +1,12 @@
 .create-resume{
     display: flex;
+    .input-color {
+        width: 35px;
+        height: 25px;
+        position: absolute;
+        top:20px;
+        padding: 0;
+    }
     &__back {
         font-family: 'Poppins';
         transition:0.3s ease-in-out;
@@ -26,8 +33,10 @@
         justify-content: center;
         align-items: center;
         height: 100vh;
+        position: relative;
+        overflow: hidden;
         &-wrap {
-            transform: scale(0.5); /* Adjust the scale factor as needed */
+            scale: 0.5;
         }
         &-btn {
           position: absolute;
