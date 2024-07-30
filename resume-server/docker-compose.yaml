@@ -19,9 +19,9 @@ services:
     container_name: ${TYPEORM_HOST}
     image: 'postgres:15.1'
     ports:
-      - "${DOCKER_DB_PORT}:5432"
+      - "${DOCKER_DB_PORT}:5433"
     expose:
-        - "5432"
+        - "5433"
     environment:
       POSTGRES_DB: '${TYPEORM_NAME}'
       POSTGRES_USER: '${TYPEORM_USER}'

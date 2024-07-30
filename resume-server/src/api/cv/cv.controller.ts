@@ -1,4 +1,18 @@
-import { Controller, Get, Param, NotFoundException, ClassSerializerInterceptor, UseInterceptors, UsePipes, ValidationPipe, Body, HttpCode, HttpStatus, Post, Put } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Param,
+  NotFoundException,
+  ClassSerializerInterceptor,
+  UseInterceptors,
+  UsePipes,
+  ValidationPipe,
+  Body,
+  HttpCode,
+  HttpStatus,
+  Post,
+  Put,
+} from '@nestjs/common';
 import { CvService } from './cv.service';
 import { Cv } from './entities/cv.entity';
 import { GetCurrentUser } from 'src/common/decorators/get-current-user.decorator';
@@ -8,7 +22,7 @@ import { CreateCvDto } from './dtos/create-cv.dto';
 import { UpdateCvDto } from './dtos/update-cv.dto';
 
 @ApiBearerAuth()
-@ApiTags("Cv")
+@ApiTags('Cv')
 @UsePipes(new ValidationPipe())
 @UseInterceptors(ClassSerializerInterceptor)
 @Controller('cv')
@@ -16,11 +30,13 @@ export class CvController {
   constructor(private readonly cvService: CvService) {}
 
   @Get()
-  async getUserCvs(@GetCurrentUser() user:User): Promise<Cv[]> {
+  async getUserCvs(@GetCurrentUser() user: User): Promise<Cv[]> {
     const userCvs = await this.cvService.getUserCvs(user.id);
 
     if (userCvs.length === 0) {
-      throw new NotFoundException(`User with ID ${user.id} not found or has no CVs.`);
+      throw new NotFoundException(
+        `User with ID ${user.id} not found or has no CVs.`,
+      );
     }
 
     return userCvs;
@@ -28,7 +44,7 @@ export class CvController {
 
   @Get('/:cvId')
   async getUserCv(
-    @GetCurrentUser() user:User,
+    @GetCurrentUser() user: User,
     @Param('cvId') cvId: number,
   ): Promise<Cv> {
     try {
@@ -44,7 +60,7 @@ export class CvController {
   @Post()
   @HttpCode(HttpStatus.CREATED)
   async createUserCv(
-    @GetCurrentUser() user:User,
+    @GetCurrentUser() user: User,
     @Body() createCvDto: CreateCvDto,
   ): Promise<Cv> {
     try {
@@ -60,19 +76,22 @@ export class CvController {
     }
   }
 
-
   @Put('/:cvId')
   async updateUserCv(
-    @GetCurrentUser() user:User,
-    @Body() updateCvDto:UpdateCvDto,
-    @Param('cvId') cvId:number 
-  ):Promise<Cv>{
+    @GetCurrentUser() user: User,
+    @Body() updateCvDto: UpdateCvDto,
+    @Param('cvId') cvId: number,
+  ): Promise<Cv> {
     try {
-      const updatedCv = await this.cvService.updateUserCv(user.id, cvId ,updateCvDto);
+      const updatedCv = await this.cvService.updateUserCv(
+        user.id,
+        cvId,
+        updateCvDto,
+      );
       return updatedCv;
-    }catch(error){
+    } catch (error) {
       if (error instanceof NotFoundException) {
-        // Handle NotFoundException
+        // Handle NotFoundExceptions
         throw new NotFoundException(error.message);
       }
       // Handle other errors
@@ -80,5 +99,3 @@ export class CvController {
     }
   }
 }
-
-
