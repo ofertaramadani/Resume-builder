@@ -1,35 +1,34 @@
-import { createRouter, createWebHistory } from 'vue-router'
-import landingPage from '../views/landingPage'
-import loginPage from '../views/loginPage'
-import signupPage from '../views/signupPage'
-import dashboardPage from '../views/dashboardPage'
-import createResumePage from '../views/createResumePage'
-
+import { createRouter, createWebHistory } from "vue-router";
+import landingPage from "../views/landingPage";
+import loginPage from "../views/loginPage";
+import signupPage from "../views/signupPage";
+import dashboardPage from "../views/dashboardPage";
+import createResumePage from "../views/createResumePage";
 
 const routes = [
   {
-    path: '/',
-    name: 'landingPage',
+    path: "/",
+    name: "landingPage",
     component: landingPage,
   },
   {
-    path: '/login',
-    name: 'loginPage',
+    path: "/login",
+    name: "loginPage",
     component: loginPage,
   },
   {
-    path: '/signup',
-    name: 'signupPage',
+    path: "/signup",
+    name: "signupPage",
     component: signupPage,
   },
   {
-    path: '/dashboard',
-    name: 'dashboardPage',
+    path: "/dashboard",
+    name: "dashboardPage",
     component: dashboardPage,
   },
   {
-    path: '/resume',
-    name: 'createResumePage',
+    path: "/resume/:resumeId",
+    name: "createResumePage",
     component: createResumePage,
   },
 ];
@@ -40,14 +39,18 @@ const router = createRouter({
 });
 
 router.beforeEach((to, from, next) => {
-  const token = localStorage.getItem('accessToken');
+  const token = localStorage.getItem("accessToken");
   window.scrollTo(0, 0);
-  if(token && token !== '' && token !== undefined && (to.name === 'loginPage' || to.name === 'signupPage')) {
-    next(from)
+  if (
+    token &&
+    token !== "" &&
+    token !== undefined &&
+    (to.name === "loginPage" || to.name === "signupPage")
+  ) {
+    next(from);
   } else {
     next();
   }
 });
-
 
 export default router;

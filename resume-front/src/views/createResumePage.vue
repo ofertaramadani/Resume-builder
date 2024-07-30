@@ -134,11 +134,11 @@
         ref="html2Pdf"
       >
         <template v-slot:pdf-content>
-          <component :is="currentTemplate" />
+          <component :is="chosenTemplate" />
         </template>
       </vue3-html2pdf>
       <div class="create-resume__template-wrap">
-        <component :is="currentTemplate" :templateColor="templateColor" />
+        <component :is="chosenTemplate" :templateColor="templateColor" />
       </div>
       <div>
         <img
@@ -156,7 +156,7 @@
 
 <script setup>
 import Vue3Html2pdf from "vue3-html2pdf";
-import { reactive, inject, ref, onBeforeMount, computed } from "vue";
+import { reactive, ref, onBeforeMount, onMounted } from "vue";
 import personalDetails from "../components/personalDetails/personalDetails.vue";
 import educationDetails from "../components/educationDetails/educationDetails.vue";
 import employmentHistory from "../components/employmentHistory/employmentHistory.vue";
@@ -170,12 +170,16 @@ import templateElement3 from "../components/template/template-3.vue";
 import templateElement4 from "../components/template/template-4.vue";
 import templateElement5 from "../components/template/template-5.vue";
 
+import { useRoute, useRouter } from "vue-router";
+
 import { useResumeStore } from "@/store/cvStore";
 import { useEducationStore } from "@/store/educationStore";
-import { useTemplatesStore } from "@/store/templateStore";
-const router = inject("router");
+
+const route = useRoute();
+const router = useRouter();
 const templateColor = ref("");
-const templateStore = useTemplatesStore();
+let chosenTemplate = ref("");
+
 const templates = {
   template_1: templateElement,
   template_2: templateElement2,
@@ -183,11 +187,6 @@ const templates = {
   template_4: templateElement4,
   template_5: templateElement5,
 };
-
-const currentTemplate = computed(() => {
-  // Get the template component based on the prop
-  return templates[templateStore?.chosenTemplate] || templateElement5; // Default to templateElement5 if not found
-});
 
 const openTabs = reactive({
   personal: true,
@@ -244,6 +243,11 @@ onBeforeMount(async () => {
   } catch (e) {
     console.error("e", e);
   }
+});
+onMounted(() => {
+  console.log(route);
+  let templateName = route.params.resumeId;
+  chosenTemplate = templates[templateName];
 });
 </script>
 <style lang="scss" scoped>

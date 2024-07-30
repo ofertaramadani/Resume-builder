@@ -69,6 +69,7 @@
               :src="require(`../../src/assets/images/${template}.png`)"
               alt=""
             />
+            <p>{{ template.replace("_", " ") }}</p>
           </li>
         </ul>
       </div>
@@ -77,13 +78,15 @@
 </template>
 
 <script setup>
-import { ref, onMounted, inject } from "vue";
+import { ref, onMounted } from "vue";
 import { auth } from "@/store/auth";
 import { useTemplatesStore } from "@/store/templateStore";
+import { useRouter } from "vue-router";
+
 const store = auth();
 const templateStore = useTemplatesStore();
 
-const router = inject("router");
+const router = useRouter();
 const isDashboardVisible = ref(false);
 const isTemplatesVisible = ref(false);
 const allTemplates = ref([
@@ -111,7 +114,7 @@ const logout = () => {
 function chooseTemplate(template) {
   console.log("clicked");
   templateStore.storeTemplate(template);
-  router.push("/resume");
+  router.push(`/resume/${template}`);
 }
 onMounted(async () => {
   isDashboardVisible.value = true;
