@@ -7,7 +7,7 @@
         :key="index"
         @click="removeSkill(skill, index)"
       >
-        <p>{{ skill }}</p>
+        <p>{{ skill.name }}</p>
       </div>
     </div>
     <div class="skills__add">
@@ -22,27 +22,28 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
-// import { useSkillsStore } from '@/store/skillsStore';
-
-// const skillsStore = useSkillsStore();
+import { ref, onBeforeMount, reactive } from "vue";
 import { useResumeStore } from "@/store/cvStore";
+
 const resumeStore = useResumeStore();
-const skillList = ref([]);
 const skillName = ref("");
+let skillList = reactive([]);
 
 const addSkill = () => {
   if (skillName.value !== "") {
     resumeStore.addSkill({ name: skillName.value });
-    skillList.value.push(skillName.value);
     skillName.value = "";
   }
 };
 
 const removeSkill = (skill, index) => {
-  resumeStore.removeSkill(skill);
-  skillList.value.splice(index, 1);
+  resumeStore.removeSkill(skill.name);
+  skillList.splice(index, 1);
 };
+
+onBeforeMount(() => {
+  skillList = resumeStore.currentResume.skills;
+});
 </script>
 
 <style lang="scss" scoped>

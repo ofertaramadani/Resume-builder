@@ -1,5 +1,5 @@
 <template>
-  <div class="dashboard">
+  <div class="dashboard" v-if="!loading">
     <div class="dashboard__wrapper">
       <div class="menu">
         <div class="menu__logo">
@@ -45,13 +45,20 @@
         </div>
       </div>
       <div class="dashboard__add-template" v-if="isDashboardVisible">
-        <div class="dashboard__create" @click="goToTemplate()">
-          <p>Add a new resume</p>
+        <div class="dashboard__create" @click="openTemplates()">
+          <p>Add a new Resume</p>
           <img src="../assets/icons/add-template.svg" alt="" />
         </div>
         <div class="dashboard__existing">
-          <h2>Existing resumes</h2>
-          <div class="dashboard__existing-resumes"></div>
+          <h2>Update exisiting resumes</h2>
+          <div class="dashboard__existing-resumes">
+            <userDetails
+              v-for="resume in resumes"
+              :data="resume"
+              :key="resume.uuid"
+              @click="modifyResume(resume.id)"
+            />
+          </div>
         </div>
       </div>
       <div
@@ -59,17 +66,18 @@
         v-if="isTemplatesVisible"
         @click="openTemplates"
       >
+        <h2>Pick a Template</h2>
         <ul>
           <li
-            v-for="template in allTemplates"
-            :key="template"
-            @click="chooseTemplate(template)"
+            v-for="template in templateStore.templates.data"
+            :key="template.id"
+            @click="chooseTemplate(template.title)"
           >
             <img
-              :src="require(`../../src/assets/images/${template}.png`)"
+              :src="require(`../../src/assets/images/${template.title}.png`)"
               alt=""
             />
-            <p>{{ template.replace("_", " ") }}</p>
+            <p>{{ template.title.replace("_", " ") }}</p>
           </li>
         </ul>
       </div>
@@ -78,24 +86,23 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, reactive } from "vue";
 import { auth } from "@/store/auth";
 import { useTemplatesStore } from "@/store/templateStore";
+import { useResumeStore } from "@/store/cvStore";
 import { useRouter } from "vue-router";
-
+import userDetails from "@/components/userDetails/userDetails.vue";
 const store = auth();
 const templateStore = useTemplatesStore();
+const resumeStore = useResumeStore();
 
 const router = useRouter();
+
 const isDashboardVisible = ref(false);
 const isTemplatesVisible = ref(false);
-const allTemplates = ref([
-  "template_1",
-  "template_2",
-  "template_3",
-  "template_4",
-  "template_5",
-]);
+
+let loading = ref(true);
+let resumes = reactive([]);
 
 const openDashboard = () => {
   isTemplatesVisible.value = false;
@@ -105,21 +112,36 @@ const openTemplates = () => {
   isDashboardVisible.value = false;
   isTemplatesVisible.value = true;
 };
-const goToTemplate = () => {
-  router.push("/resume");
-};
 const logout = () => {
   store.logout();
 };
-function chooseTemplate(template) {
-  console.log("clicked");
+
+const chooseTemplate = (template) => {
+  console.log("clicked", template);
   templateStore.storeTemplate(template);
   router.push(`/resume/${template}`);
-}
+};
+
+const modifyResume = (id) => {
+  resumeStore.resumeToBeUpdated = id;
+  isDashboardVisible.value = false;
+  isTemplatesVisible.value = true;
+};
+
 onMounted(async () => {
-  isDashboardVisible.value = true;
-  await templateStore.getTemplates();
-  // allTemplates.value = templateStore.templates;
+  try {
+    loading.value = true;
+    isDashboardVisible.value = true;
+
+    resumeStore.resumeToBeUpdated = null;
+    await resumeStore.getResumes();
+    await templateStore.getTemplates();
+    resumes = resumeStore.resumes;
+  } catch (e) {
+    console.error(e);
+  } finally {
+    loading.value = false;
+  }
 });
 </script>
 

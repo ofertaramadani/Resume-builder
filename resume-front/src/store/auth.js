@@ -8,12 +8,12 @@ export const auth = defineStore("auth", {
   }),
 
   actions: {
-    setLoginStatus(isLoggedIn){
-      this.isLoggedIn = isLoggedIn
+    setLoginStatus(isLoggedIn) {
+      this.isLoggedIn = isLoggedIn;
     },
     setUserToken(token) {
       localStorage.setItem("accessToken", token);
-      this.setLoginStatus(true)
+      this.setLoginStatus(true);
     },
     async login(credentials) {
       try {
@@ -23,10 +23,8 @@ export const auth = defineStore("auth", {
         );
         this.setUserToken(res.data.accessToken);
       } catch (error) {
-        console.error(
-          "LOGIN ER                                                                                                  ROR:",
-          error.response.data.message
-        );
+        console.error("LOGIN ERROR:", error.response.data.message);
+        throw error;
       }
     },
     async register(credentials) {

@@ -1,10 +1,18 @@
-import { defineStore } from 'pinia';
+import { defineStore } from "pinia";
 import api from "@/api/api";
 
-export const useEducationStore = defineStore('education', {
+export const useEducationStore = defineStore("education", {
   state: () => ({
-    professionalSummary: '',
-    educations: [], 
+    professionalSummary: "",
+    educations: [],
+    newEducation: {
+      title: "",
+      school: "",
+      place: "",
+      start: "",
+      end: "",
+      description: "",
+    },
   }),
 
   actions: {
@@ -12,27 +20,21 @@ export const useEducationStore = defineStore('education', {
       this.professionalSummary = summary;
     },
 
-    async getEducation(cvId){
+    async getEducation(cvId) {
       try {
-        const res = await api({ requiresAuth: true }).get(
-          `/education/${cvId}`
-        );
+        const res = await api({ requiresAuth: true }).get(`/education/${cvId}`);
         const allEducations = res.data;
-        allEducations.forEach((education) => this.educations.push(education))
+        allEducations.forEach((education) => this.educations.push(education));
       } catch (error) {
-        console.error(
-          error
-        );
+        console.error(error);
       }
     },
 
     async updateEducation(education) {
       try {
-      await api({ requiresAuth:true }).put(
-        "/education", education
-      );
-      }catch(error){
-        console.error(error)
+        await api({ requiresAuth: true }).put("/education", education);
+      } catch (error) {
+        console.error(error);
       }
     },
 

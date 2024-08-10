@@ -15,27 +15,27 @@
     </div>
     <div class="personal-details__input">
       <p class="personal-details__input-title">First Name</p>
-      <input type="text" v-model="resumePersonalDetails.firstname" @input="updateUserFirstname" />
+      <input type="text" v-model="resumePersonalDetails.firstname"  />
     </div>
     <div class="personal-details__input">
       <p class="personal-details__input-title">Last Name</p>
-      <input type="text" v-model="resumePersonalDetails.lastname" @input="updateUserLastname" />
+      <input type="text" v-model="resumePersonalDetails.lastname"  />
     </div>
     <div class="personal-details__input">
       <p class="personal-details__input-title">Email</p>
-      <input type="text" v-model="resumePersonalDetails.email" @input="updateUserEmail" />
+      <input type="text" v-model="resumePersonalDetails.email"  />
     </div>
     <div class="personal-details__input">
       <p class="personal-details__input-title">Phone</p>
-      <input type="text" v-model="resumePersonalDetails.phone" @input="updateUserPhone" />
+      <input type="text" v-model="resumePersonalDetails.phone" />
     </div>
     <div class="personal-details__input">
       <p class="personal-details__input-title">Country</p>
-      <input type="text" v-model="resumePersonalDetails.country" @input="updateUserCountry" />
+      <input type="text" v-model="resumePersonalDetails.country" />
     </div>
     <div class="personal-details__input">
       <p class="personal-details__input-title">City</p>
-      <input type="text" v-model="resumePersonalDetails.city" @input="updateUserCity" />
+      <input type="text" v-model="resumePersonalDetails.city"  />
     </div>
   </div>
 </template>
@@ -50,34 +50,6 @@ var resumePersonalDetails = reactive({});
 onBeforeMount(()=>{
   resumePersonalDetails = resumeStore.currentResume
 })
-const updateUserTitle = () => {
-  resumeStore.currentResume.title = resumePersonalDetails.title
-};
-
-const updateUserFirstname = () => {
-  resumeStore.currentResume.firstname = resumePersonalDetails.firstname
-};
-
-const updateUserLastname = () => {
-  resumeStore.currentResume.lastname = resumePersonalDetails.lastname
-};
-
-const updateUserEmail = () => {
-  resumeStore.currentResume.email = resumePersonalDetails.email
-};
-
-const updateUserPhone = () => {
-  resumeStore.currentResume.phone = resumePersonalDetails.phone
-};
-
-const updateUserCountry = () => {
-  resumeStore.currentResume.country = resumePersonalDetails.country
-};
-
-const updateUserCity = () => {
-  resumeStore.currentResume.city = resumePersonalDetails.city
-};
-
 const handlePhotoUpload = (event) => {
   const file = event.target.files[0];
   if (file) {

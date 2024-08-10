@@ -54,7 +54,6 @@ export class User extends AuditEntity {
   @Column({ nullable: true })
   timezone: string;
 
-  @OneToMany(() => Cv, cv => cv.user)
+  @OneToMany(() => Cv, (cv) => cv.user)
   cvs: Cv[];
-
 }

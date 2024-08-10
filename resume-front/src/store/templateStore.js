@@ -10,7 +10,7 @@ export const useTemplatesStore = defineStore("templates", {
   actions: {
     async getTemplates() {
       try {
-        const templates = await api({ requiresAuth: true }).get("/templates");
+        const templates = await api({ requiresAuth: false }).get("/templates");
         this.templates = templates;
       } catch (error) {
         console.error(error);

@@ -8,27 +8,27 @@
     <div class="employment employment__exist" v-show="isOpen[index]">
       <div class="employment__input employment__title">
         <p class="employment__input-title">Title</p>
-        <input type="text" :value="experience.title" readonly />
+        <input type="text" v-model="experience.title" />
       </div>
       <div class="employment__input">
         <p class="employment__input-title">Employer</p>
-        <input type="text" :value="experience.employer" readonly />
+        <input type="text" v-model="experience.employer" />
       </div>
       <div class="employment__input">
         <p class="employment__input-title">Place</p>
-        <input type="text" :value="experience.place" readonly />
+        <input type="text" v-model="experience.place" />
       </div>
       <div class="employment__input">
         <p class="employment__input-title">Start</p>
-        <input type="date" :value="experience.start" readonly  />
+        <input type="date" v-model="experience.start"/>
       </div>
       <div class="employment__input">
         <p class="employment__input-title">End</p>
-        <input type="date" :value="experience.end" readonly  />
+        <input type="date" v-model="experience.end"/>
       </div>
       <div class="employment__input employment__description">
         <p class="employment__input-title">Description</p>
-        <textarea :value="experience.description" readonly ></textarea>
+        <textarea v-model="experience.description"></textarea>
       </div>
       <div class="employment__remove" @click="removeExperience(experience)">
           <img src="../../assets/icons/trash-icon.svg" alt="">
@@ -38,27 +38,27 @@
   <div class="employment">
     <div class="employment__input employment__title">
     <p class="employment__input-title">Title</p>
-    <input type="text" @input="updateNewtitle($event)" />
+    <input type="text"  v-model="newExperience.title"/>
   </div>
   <div class="employment__input">
     <p class="employment__input-title">Employer</p>
-    <input type="text" @input="updateNewemployer($event)" />
+    <input type="text"  v-model="newExperience.employer" />
   </div>
   <div class="employment__input">
     <p class="employment__input-title">Place</p>
-    <input type="text" @input="updateNewplace($event)" />
+    <input type="text" v-model="newExperience.place" />
   </div>
   <div class="employment__input">
     <p class="employment__input-title">Start Date</p>
-    <input type="date" @input="updateNewstart($event)" />
+    <input type="date" v-model="newExperience.start"/>
   </div>
   <div class="employment__input">
     <p class="employment__input-title">End Date</p>
-    <input type="date" @input="updateNewend($event)" />
+    <input type="date" v-model="newExperience.end" />
   </div>
   <div class="employment__input employment__description">
     <p class="employment__input-title">Description</p>
-    <textarea type="text" @input="updateNewdescription($event)"></textarea>
+    <textarea type="text" v-model="newExperience.description"></textarea>
   </div>
   </div>
   <button @click="addNewExperience" class="employment__btn"><p>Add +</p></button>
@@ -89,29 +89,6 @@ end: '',
 description: ''
 };
 
-const updateNewtitle = (event) => {
-newExperience.title = event.target.value;
-};
-
-const updateNewemployer = (event) => {
-newExperience.employer = event.target.value;
-};
-
-const updateNewplace = (event) => {
-newExperience.place = event.target.value;
-};
-
-const updateNewstart = (event) => {
-newExperience.start = event.target.value;
-};
-
-const updateNewend = (event) => {
-newExperience.end = event.target.value;
-};
-
-const updateNewdescription = (event) => {
-newExperience.description = event.target.value;
-};
 const addNewExperience = async () => {
 resumeStore.addExperience({ ...newExperience });
 newExperience.title = '';

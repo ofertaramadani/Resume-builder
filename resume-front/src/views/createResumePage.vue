@@ -119,8 +119,7 @@
       </div>
       <div class="break"></div>
     </div>
-    <div class="create-resume__template">
-      <input type="color" v-model="templateColor" class="input-color" />
+    <div class="create-resume__template" :class="{ 'dark-bg': !notSaved }">
       <vue3-html2pdf
         :show-layout="false"
         :float-layout="true"
@@ -134,18 +133,24 @@
         ref="html2Pdf"
       >
         <template v-slot:pdf-content>
-          <component :is="chosenTemplate" />
+          <component :is="chosenTemplate" :resume="resume.currentResume" />
         </template>
       </vue3-html2pdf>
       <div class="create-resume__template-wrap">
-        <component :is="chosenTemplate" :templateColor="templateColor" />
+        <component :is="chosenTemplate" />
       </div>
-      <div>
+      <div class="save-icons">
         <img
+          v-if="notSaved"
           src="../assets/icons/download-icon.svg"
           @click="generatePDF"
           class="create-resume__template-btn"
         />
+        <span v-else class="save-icon create-resume__template-btn">
+          <span class="loader"></span>
+          <span class="loader"></span>
+          <span class="loader"></span>
+        </span>
       </div>
     </div>
   </div>
@@ -156,7 +161,7 @@
 
 <script setup>
 import Vue3Html2pdf from "vue3-html2pdf";
-import { reactive, ref, onBeforeMount, onMounted } from "vue";
+import { defineAsyncComponent, reactive, ref, onMounted } from "vue";
 import personalDetails from "../components/personalDetails/personalDetails.vue";
 import educationDetails from "../components/educationDetails/educationDetails.vue";
 import employmentHistory from "../components/employmentHistory/employmentHistory.vue";
@@ -164,30 +169,15 @@ import skillsDetails from "../components/skillsDetails/skillsDetails.vue";
 import socialDetails from "../components/socials/socialDetails.vue";
 import loaderElement from "../components/loaderElement/loaderElement.vue";
 
-import templateElement from "../components/template/template.vue";
-import templateElement2 from "../components/template/template-2.vue";
-import templateElement3 from "../components/template/template-3.vue";
-import templateElement4 from "../components/template/template-4.vue";
-import templateElement5 from "../components/template/template-5.vue";
-
-import { useRoute, useRouter } from "vue-router";
-
+import { useRoute, useRouter, onBeforeRouteLeave } from "vue-router";
 import { useResumeStore } from "@/store/cvStore";
-import { useEducationStore } from "@/store/educationStore";
 
 const route = useRoute();
 const router = useRouter();
-const templateColor = ref("");
+let updateCvId = ref("");
 let chosenTemplate = ref("");
-
-const templates = {
-  template_1: templateElement,
-  template_2: templateElement2,
-  template_3: templateElement3,
-  template_4: templateElement4,
-  template_5: templateElement5,
-};
-
+let resumeFinished = ref(false);
+let notSaved = ref(true);
 const openTabs = reactive({
   personal: true,
   summary: false,
@@ -198,7 +188,6 @@ const openTabs = reactive({
 
 const templateLoaded = ref(false);
 const resume = useResumeStore();
-const educationStore = useEducationStore();
 const professionalSummary = ref();
 
 const updateProfessionalSummary = () => {
@@ -212,45 +201,223 @@ function openTab(tabName) {
 
 const goBack = () => {
   router.back();
+  resume.resumeToBeUpdated = null;
 };
 
 const html2Pdf = ref(null);
 async function generatePDF() {
   try {
-    if (resume.currentResume.uuid) {
-      resume.updateResume(resume.currentResume);
-    } else {
-      console.log("create");
-      resume.createResume(resume.currentResume);
-    }
+    resume.currentResume.uuid
+      ? await resume.updateResume(resume.currentResume)
+      : await resume.createResume(resume.currentResume);
+    resumeFinished.value = true;
+    notSaved.value = false;
     // html2Pdf.value.generatePdf();
+    setTimeout(() => {
+      notSaved.value = true;
+    }, 3000);
   } catch (error) {
     console.error(error);
     alert("Sorry could not save cv");
   }
 }
-
-onBeforeMount(async () => {
+onBeforeRouteLeave(async (to, from, next) => {
+  if (resumeFinished.value === false) {
+    await generatePDF();
+  }
+  resume.resumeToBeUpdated = null;
+  location.reload();
+  next(); // Ensure to call next() to proceed with navigation
+});
+onMounted(async () => {
   try {
-    // let jobDescription =
-    //   "I am a skilled Full Stack Developer with expertise in Vue.js 3 for frontend development and NestJS for backend services. My experience encompasses designing and implementing responsive web applications that integrate seamlessly with RESTful APIs. I excel in optimizing application performance and ensuring cross-browser compatibility. My proficiency extends to Docker for containerization and deployment, enhancing scalability and reliability in diverse environments.";
-    await resume.getResume();
-    // let someanswer = await resume.getAiSkills(jobDescription);
-    // console.log("some", someanswer);
-    await educationStore.getEducation(resume.currentResume.id);
-    professionalSummary.value = resume.currentResume.professionalSummary;
-    templateLoaded.value = true;
+    updateCvId.value = resume.resumeToBeUpdated;
+    let templateName = route.params.resumeId;
+    chosenTemplate.value = await defineAsyncComponent(() =>
+      import(`../components/template/${templateName}.vue`)
+    );
+    if (updateCvId?.value) {
+      await resume.getResume(updateCvId.value);
+      professionalSummary.value = resume.currentResume.professionalSummary;
+    }
   } catch (e) {
     console.error("e", e);
+  } finally {
+    templateLoaded.value = true;
   }
-});
-onMounted(() => {
-  console.log(route);
-  let templateName = route.params.resumeId;
-  chosenTemplate = templates[templateName];
 });
 </script>
 <style lang="scss" scoped>
 @import "../assets/scss/index.scss";
 @import "../assets/scss/pages/createResumePage.scss";
+.dark-bg::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5); /* Adjust the color and transparency */
+  z-index: 1; /* Ensure the overlay is on top */
+}
+.save-icon {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 9999;
+
+  background: white;
+  height: 40px;
+  width: 35px;
+  display: block;
+  padding-top: 10px;
+
+  -moz-border-radius: 3px;
+  border-radius: 3px;
+}
+
+.save-icon:before {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  border-width: 0 10px 10px 0;
+  border-style: solid;
+  border-color: #a4a6a7 #3c4145;
+}
+
+.save-icon:after {
+  content: "✓";
+  color: green;
+  font-size: 30px;
+  position: absolute;
+  top: 15%;
+  left: 20%;
+  -webkit-transform: scale(0);
+  -moz-transform: scale(0);
+  transform: scale(0);
+
+  -webkit-animation: pop 0.5s 2s forwards;
+  -moz-animation: pop 0.5s 2s forwards;
+  animation: pop 0.5s 2s forwards;
+}
+
+.loader {
+  background: #e2e2e2;
+  width: 80%;
+  height: 5px;
+  display: block;
+  margin: 3px auto;
+
+  position: relative;
+  overflow: hidden;
+
+  -webkit-animation: fade-loaders 0.2s 3s forwards;
+  -moz-animation: fade-loaders 0.2s 3s forwards;
+  animation: fade-loaders 0.2s 3s forwards;
+}
+
+.loader:after {
+  content: "";
+  background: #2c3033;
+  width: 0;
+  height: 5px;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.loader:first-child:after {
+  -webkit-animation: loader 0.4s 1s forwards;
+  -moz-animation: loader 0.4s 1s forwards;
+  animation: loader 0.4s 1s forwards;
+}
+
+.loader:nth-child(2n):after {
+  -webkit-animation: loader 0.4s 1.5s forwards;
+  -moz-animation: loader 0.4s 1.5s forwards;
+  animation: loader 0.4s 1.5s forwards;
+}
+
+.loader:nth-child(3n):after {
+  -webkit-animation: loader 0.4s 2s forwards;
+  -moz-animation: loader 0.4s 2s forwards;
+  animation: loader 0.4s 2s forwards;
+}
+
+@-webkit-keyframes loader {
+  0% {
+    width: 0%;
+  }
+  100% {
+    width: 100%;
+  }
+}
+@-moz-keyframes loader {
+  0% {
+    width: 0%;
+  }
+  100% {
+    width: 100%;
+  }
+}
+@keyframes loader {
+  0% {
+    width: 0%;
+  }
+  100% {
+    width: 100%;
+  }
+}
+
+@-webkit-keyframes pop {
+  0% {
+    -webkit-transform: scale(0);
+  }
+  100% {
+    -webkit-transform: scale(1);
+  }
+}
+@-moz-keyframes pop {
+  0% {
+    -moz-transform: scale(0);
+  }
+  100% {
+    -moz-transform: scale(1);
+  }
+}
+@keyframes pop {
+  0% {
+    transform: scale(0);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@-webkit-keyframes fade-loaders {
+  0% {
+    opactity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+@-moz-keyframes fade-loaders {
+  0% {
+    opactity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+@keyframes fade-loaders {
+  0% {
+    opactity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
 </style>

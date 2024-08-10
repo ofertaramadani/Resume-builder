@@ -11,20 +11,20 @@
 
 <script setup>
 import { onMounted } from "vue";
-import navbarElement from './components/navbar/navbarElement.vue';
+import navbarElement from "./components/navbar/navbarElement.vue";
 import { auth } from "@/store/auth";
 const store = auth();
 
-  onMounted(()=> {
-    if(localStorage.getItem('accessToken')){
-      console.log("yes")
-      store.setLoginStatus(true)
-      //do this;
-    } else { 
-      console.log("no")
-      store.setLoginStatus(false)
-    }
-  });
+onMounted(() => {
+  if (localStorage.getItem("accessToken")) {
+    console.log("yes");
+    store.setLoginStatus(true);
+    //do this;
+  } else {
+    console.log("no");
+    store.setLoginStatus(false);
+  }
+});
 </script>
 
 <style lang="scss">

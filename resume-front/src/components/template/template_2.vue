@@ -1,5 +1,5 @@
 <template>
-  <div class="cv-template">
+  <div class="template_2 cv-template">
     <div class="header" :style="{ backgroundColor: localTemplateColor }">
       <div class="header__photo" v-if="resume.photo">
         <img :src="resume.photo" alt="User Photo" />
@@ -29,20 +29,20 @@
             </li>
           </ul>
         </div>
-        <div class="section" v-if="socials.length">
+        <div class="section" v-if="resume.socials.length">
           <h3>Socials</h3>
           <div class="line"></div>
           <ul>
-            <li v-for="(social, index) in socials" :key="index">
+            <li v-for="(social, index) in resume.socials" :key="index">
               {{ social.name }}
             </li>
           </ul>
         </div>
-        <div class="section" v-if="skills.length">
+        <div class="section" v-if="resume.skills.length">
           <h3>Skills</h3>
           <div class="line"></div>
           <ul>
-            <li v-for="(skill, index) in skills" :key="index">
+            <li v-for="(skill, index) in resume.skills" :key="index">
               {{ skill.name }}
             </li>
           </ul>
@@ -54,12 +54,12 @@
           <div class="line"></div>
           <p>{{ resume.professionalSummary }}</p>
         </div>
-        <div class="section" v-if="educations.length">
+        <div class="section" v-if="resume.educations.length">
           <h3>Education</h3>
           <div class="line"></div>
           <div class="education-list">
             <div
-              v-for="(education, index) in educations"
+              v-for="(education, index) in resume.educations"
               :key="index"
               class="education-item"
             >
@@ -68,14 +68,26 @@
               <h6>{{ education.title }}</h6>
               <p>{{ education.description }}</p>
             </div>
+            <div class="education-item">
+              <h4>
+                {{ resumeStore.newEducation.start }} -
+                {{ resumeStore.newEducation.end }}
+              </h4>
+              <h5>
+                {{ resumeStore.newEducation.school }},
+                {{ resumeStore.newEducation.place }}
+              </h5>
+              <h6>{{ resumeStore.newEducation.title }}</h6>
+              <p>{{ resumeStore.newEducation.description }}</p>
+            </div>
           </div>
         </div>
-        <div class="section" v-if="experiences.length">
+        <div class="section" v-if="resume.experiences.length">
           <h3>Experience</h3>
           <div class="line"></div>
           <div class="experience-list">
             <div
-              v-for="experience in experiences"
+              v-for="experience in resume.experiences"
               :key="experience.id"
               class="experience-item"
             >
@@ -92,37 +104,16 @@
 </template>
 
 <script setup>
-import { ref, watch, defineProps } from "vue";
+import { onBeforeMount, reactive } from "vue";
 import { useResumeStore } from "@/store/cvStore";
 
-const props = defineProps(["templateColor"]);
 const resumeStore = useResumeStore();
+let resume = reactive({});
 
-const localTemplateColor = ref(props.templateColor);
-const experiences = ref([]);
-const educations = ref([]);
-const socials = ref([]);
-const skills = ref([]);
-const resume = ref({});
-
-watch(
-  () => resumeStore.currentResume,
-  (newResume) => {
-    resume.value = newResume;
-    experiences.value = newResume.experiences;
-    educations.value = newResume.educations;
-    socials.value = newResume.socials;
-    skills.value = newResume.skills;
-  },
-  { immediate: true, deep: true }
-);
-
-watch(
-  () => props.templateColor,
-  (newColor) => {
-    localTemplateColor.value = newColor;
-  }
-);
+onBeforeMount(() => {
+  resume = resumeStore.currentResume;
+  console.log("ressume", resume);
+});
 </script>
 
 <style lang="scss" scoped>

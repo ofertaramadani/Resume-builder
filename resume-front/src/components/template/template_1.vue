@@ -1,51 +1,65 @@
 <template>
-  <div class="template">
+  <div class="template_1 template">
     <div class="template-side" :style="{ backgroundColor: localTemplateColor }">
       <div class="template-side__personal">
         <div
           class="template-side__info template-side__info-profile"
-          v-if="resume.photo"
+          v-if="props.resume.photo"
         >
           <div class="template-side__info-img">
-            <img :src="resume.photo" alt="User Photo" />
+            <img :src="props.resume.photo" alt="User Photo" />
           </div>
         </div>
         <div
           class="template-side__info-title"
-          v-if="resume.email || resume.phone || resume.city || resume.country"
+          v-if="
+            props.resume.email ||
+            props.resume.phone ||
+            props.resume.city ||
+            props.resume.country
+          "
         >
           <h2>Contact</h2>
           <div class="line"></div>
-          <div class="template-side__info" v-if="resume.email">
+          <div class="template-side__info" v-if="props.resume.email">
             <img src="../../assets/icons/email-icon.svg" alt="" />
-            <p>{{ resume.email }}</p>
+            <p>{{ props.resume.email }}</p>
           </div>
-          <div class="template-side__info" v-if="resume.phone">
+          <div class="template-side__info" v-if="props.resume.phone">
             <img src="../../assets/icons/phone-icon.svg" alt="" />
-            <p>{{ resume.phone }}</p>
+            <p>{{ props.resume.phone }}</p>
           </div>
-          <div class="template-side__info" v-if="resume.country || resume.city">
+          <div
+            class="template-side__info"
+            v-if="props.resume.country || props.resume.city"
+          >
             <img src="../../assets/icons/place-icon.svg" alt="" />
-            <p>{{ resume.country }}, {{ resume.city }}</p>
+            <p>{{ props.resume.country }}, {{ props.resume.city }}</p>
           </div>
         </div>
-        <div class="template-side__info-title" v-if="socials.length">
+        <div
+          class="template-side__info-title"
+          v-if="props.resume.socials.length"
+        >
           <h2>Socials</h2>
           <div class="line"></div>
           <div class="template-side__info">
             <ul>
-              <li v-for="(social, index) in socials" :key="index">
+              <li v-for="(social, index) in props.resume.socials" :key="index">
                 <p>{{ social.name }}</p>
               </li>
             </ul>
           </div>
         </div>
-        <div class="template-side__info-title" v-if="skills.length">
+        <div
+          class="template-side__info-title"
+          v-if="props.resume.skills.length"
+        >
           <h2>Skills</h2>
           <div class="line"></div>
           <div class="template-side__info">
             <ul>
-              <li v-for="(skill, index) in skills" :key="index">
+              <li v-for="(skill, index) in props.resume.skills" :key="index">
                 <p>{{ skill.name }}</p>
               </li>
             </ul>
@@ -56,13 +70,16 @@
     <div class="template-info">
       <div class="template-info__wrap">
         <div class="template-info__title">
-          <h1>{{ resume.firstname }} {{ resume.lastname }}</h1>
-          <h2>{{ resume.title }}</h2>
+          <h1>{{ props.resume.firstname }} {{ props.resume.lastname }}</h1>
+          <h2>{{ props.resume.title }}</h2>
         </div>
-        <div class="template-info__summary" v-if="resume.professionalSummary">
+        <div
+          class="template-info__summary"
+          v-if="props.resume.professionalSummary"
+        >
           <h2>Professional Summary</h2>
           <div class="line"></div>
-          <p>{{ resume.professionalSummary }}</p>
+          <p>{{ props.resume.professionalSummary }}</p>
         </div>
         <div class="template-info__summary">
           <h2>Education</h2>
@@ -70,7 +87,7 @@
           <div class="template-info__education">
             <div
               class="template-info__education-wrap"
-              v-for="(education, index) in educations"
+              v-for="(education, index) in props.resume.educations"
               :key="index"
             >
               <h4 v-if="education.start">
@@ -84,6 +101,32 @@
               <h2 v-if="education.title">{{ education.title }}</h2>
               <p v-if="education.description">{{ education.description }}</p>
             </div>
+            <div class="template-info__education-wrap">
+              <h4 v-if="props.resume.newEducation.start">
+                {{ props.resume.newEducation.start
+                }}<span v-if="props.resume.newEducation.end"> / </span
+                >{{ props.resume.newEducation.end }}
+              </h4>
+              <h3
+                v-if="
+                  props.resume.newEducation.school ||
+                  props.resume.newEducation.place
+                "
+              >
+                <span v-if="props.resume.newEducation.school">{{
+                  props.resume.newEducation.school
+                }}</span>
+                <span v-if="props.resume.newEducation.place">
+                  - {{ props.resume.newEducation.place }}</span
+                >
+              </h3>
+              <h2 v-if="props.resume.newEducation.title">
+                {{ props.resume.newEducation.title }}
+              </h2>
+              <p v-if="props.resume.newEducation.description">
+                {{ props.resume.newEducation.description }}
+              </p>
+            </div>
           </div>
         </div>
         <div class="template-info__summary">
@@ -92,7 +135,7 @@
           <div class="template-info__education">
             <div
               class="template-info__education-wrap"
-              v-for="experience in experiences"
+              v-for="experience in props.resume.experiences"
               :key="experience.id"
             >
               <h4>
@@ -108,6 +151,28 @@
               <h2>{{ experience.title }}</h2>
               <p>{{ experience.description }}</p>
             </div>
+            <div class="template-info__education-wrap">
+              <h4>
+                {{ props.resume.newExperience.start
+                }}<span v-if="props.resume.newExperience.end"> / </span
+                >{{ props.resume.newExperience.end }}
+              </h4>
+              <h3
+                v-if="
+                  props.resume.newExperience.employer ||
+                  props.resume.newExperience.place
+                "
+              >
+                <span v-if="props.resume.newExperience.employer">{{
+                  props.resume.newExperience.employer
+                }}</span>
+                <span v-if="props.resume.newExperience.place">
+                  - {{ props.resume.newExperience.place }}</span
+                >
+              </h3>
+              <h2>{{ props.resume.newExperience.title }}</h2>
+              <p>{{ props.resume.newExperience.description }}</p>
+            </div>
           </div>
         </div>
       </div>
@@ -116,38 +181,7 @@
 </template>
 
 <script setup>
-import { ref, watch, defineProps } from "vue";
-import { useResumeStore } from "@/store/cvStore";
-
-const props = defineProps(["templateColor"]);
-const resumeStore = useResumeStore();
-
-const localTemplateColor = ref(props.templateColor);
-console.log("haha", localTemplateColor);
-const experiences = ref([]);
-const educations = ref([]);
-const socials = ref([]);
-const skills = ref([]);
-const resume = ref({});
-
-watch(
-  () => resumeStore.currentResume,
-  (newResume) => {
-    resume.value = newResume;
-    experiences.value = newResume.experiences;
-    educations.value = newResume.educations;
-    socials.value = newResume.socials;
-    skills.value = newResume.skills;
-  },
-  { immediate: true, deep: true }
-);
-
-watch(
-  () => props.templateColor,
-  (newColor) => {
-    localTemplateColor.value = newColor;
-  }
-);
+const props = defineProps(["resume"]);
 </script>
 
 <style lang="scss" scoped>
@@ -206,7 +240,6 @@ watch(
         font-size: 12px;
         color: white;
         font-weight: 400;
-        text-transform: capitalize;
       }
       & ul {
         display: flex;

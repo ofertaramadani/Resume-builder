@@ -4,6 +4,7 @@ import api from "@/api/api";
 export const useResumeStore = defineStore("resume", {
   state: () => ({
     resumes: [],
+    resumeToBeUpdated: null,
     currentResume: {
       educations: [],
       experiences: [],
@@ -21,11 +22,29 @@ export const useResumeStore = defineStore("resume", {
     currentResumeExperiences: [],
     currentResumeSocials: [],
     currentResumeSkills: [],
+    newEducation: {
+      title: "",
+      school: "",
+      place: "",
+      start: "",
+      end: "",
+      description: "",
+    },
+    newExperience: {
+      title: "",
+      employer: "",
+      place: "",
+      start: "",
+      end: "",
+      description: "",
+    },
   }),
 
   actions: {
     async createResume(resume) {
       try {
+        this.addEducation();
+        console.log("resume create", resume);
         return await api({ requiresAuth: true }).post("/cv", resume);
       } catch (error) {
         console.error("Errorj", error);
@@ -33,7 +52,8 @@ export const useResumeStore = defineStore("resume", {
     },
     async updateResume(resume) {
       try {
-        console.log("resume", resume);
+        this.addEducation();
+        console.log("resume update", resume);
         const cvId = this.currentResume.id;
         let res = await api({ requiresAuth: true }).put(`/cv/${cvId}`, resume);
         console.log("On update response:", res);
@@ -41,9 +61,18 @@ export const useResumeStore = defineStore("resume", {
         console.error(error);
       }
     },
-    async getResume() {
+    async getResumes() {
       try {
-        const resume = await api({ requiresAuth: true }).get("/cv/1");
+        const resumes = await api({ requiresAuth: true }).get("/cv");
+        console.log("rrrs", resumes);
+        this.resumes = resumes.data;
+      } catch (error) {
+        console.error(error);
+      }
+    },
+    async getResume(id) {
+      try {
+        const resume = await api({ requiresAuth: true }).get(`/cv/${id}`);
         this.currentResume = resume.data;
         this.currentResumeEducations = resume.data.educations;
         this.currentResumeExperiences = resume.data.experiences;
@@ -53,7 +82,6 @@ export const useResumeStore = defineStore("resume", {
         console.error(error);
       }
     },
-
     removeEducation(education) {
       this.currentResume.educations = this.currentResume.educations.filter(
         (edu) => {
@@ -70,19 +98,49 @@ export const useResumeStore = defineStore("resume", {
     },
     removeSkill(skill) {
       this.currentResume.skills = this.currentResume.skills.filter((sk) => {
-        return sk.name !== skill;
+        return sk.name !== skill.name;
       });
     },
     removeSocial(social) {
+      console.log(social, "social");
       this.currentResume.socials = this.currentResume.socials.filter((sc) => {
-        return sc.name !== social;
+        return sc.name !== social.name;
       });
+      console.log("this.currentResume", this.currentResume);
     },
-    addEducation(education) {
-      this.currentResume.educations.push(education);
+    addEducation() {
+      if (!(Object.keys(this.newEducation).length === 0)) {
+        console.log("education added");
+        this.currentResume.educations.push(this.newEducation);
+        this.setDefaultEducation();
+      }
     },
-    addExperience(experience) {
-      this.currentResume.experiences.push(experience);
+    setDefaultEducation() {
+      this.newEducation = {
+        title: "",
+        school: "",
+        place: "",
+        start: "",
+        end: "",
+        description: "",
+      };
+    },
+    addExperience() {
+      if (!(Object.keys(this.newExperience).length === 0)) {
+        console.log("education added");
+        this.currentResume.experiences.push(this.newExperience);
+        this.setDefaultExperience();
+      }
+    },
+    setDefaultExperience() {
+      this.newExperience = {
+        title: "",
+        employer: "",
+        place: "",
+        start: "",
+        end: "",
+        description: "",
+      };
     },
     addSkill(skill) {
       this.currentResume.skills.push(skill);

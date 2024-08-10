@@ -1,5 +1,5 @@
 <template>
-  <div class="fancy-cv-template">
+  <div class="template_4 fancy-cv-template">
     <header :style="{ backgroundColor: localTemplateColor }">
       <div class="header-content">
         <div class="header-photo" v-if="resume.photo">
@@ -83,7 +83,7 @@
 </template>
 
 <script setup>
-import { ref, watch, defineProps } from "vue";
+import { ref, watch } from "vue";
 import { useResumeStore } from "@/store/cvStore";
 
 const props = defineProps(["templateColor"]);
