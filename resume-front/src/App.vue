@@ -17,11 +17,8 @@ const store = auth();
 
 onMounted(() => {
   if (localStorage.getItem("accessToken")) {
-    console.log("yes");
     store.setLoginStatus(true);
-    //do this;
   } else {
-    console.log("no");
     store.setLoginStatus(false);
   }
 });

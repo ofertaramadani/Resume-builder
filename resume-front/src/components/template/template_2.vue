@@ -29,20 +29,20 @@
             </li>
           </ul>
         </div>
-        <div class="section" v-if="resume.socials.length">
+        <div class="section" v-if="socials.length">
           <h3>Socials</h3>
           <div class="line"></div>
           <ul>
-            <li v-for="(social, index) in resume.socials" :key="index">
+            <li v-for="(social, index) in socials" :key="index">
               {{ social.name }}
             </li>
           </ul>
         </div>
-        <div class="section" v-if="resume.skills.length">
+        <div class="section" v-if="skills.length">
           <h3>Skills</h3>
           <div class="line"></div>
           <ul>
-            <li v-for="(skill, index) in resume.skills" :key="index">
+            <li v-for="(skill, index) in skills" :key="index">
               {{ skill.name }}
             </li>
           </ul>
@@ -54,48 +54,86 @@
           <div class="line"></div>
           <p>{{ resume.professionalSummary }}</p>
         </div>
-        <div class="section" v-if="resume.educations.length">
+        <div
+          class="section"
+          v-if="!isArrayEmpty(educations) || !isObjectEmpty(newEducation)"
+        >
           <h3>Education</h3>
           <div class="line"></div>
           <div class="education-list">
             <div
-              v-for="(education, index) in resume.educations"
+              v-for="(education, index) in educations"
               :key="index"
               class="education-item"
             >
-              <h4>{{ education.start }} - {{ education.end }}</h4>
-              <h5>{{ education.school }}, {{ education.place }}</h5>
-              <h6>{{ education.title }}</h6>
-              <p>{{ education.description }}</p>
-            </div>
-            <div class="education-item">
-              <h4>
-                {{ resumeStore.newEducation.start }} -
-                {{ resumeStore.newEducation.end }}
+              <h4 v-if="education.start">
+                {{ education.start }} - {{ education.end }}
               </h4>
               <h5>
-                {{ resumeStore.newEducation.school }},
-                {{ resumeStore.newEducation.place }}
+                {{ education.school
+                }}<span v-if="education.school && education.place">,</span>
+                {{ education.place }}
               </h5>
-              <h6>{{ resumeStore.newEducation.title }}</h6>
-              <p>{{ resumeStore.newEducation.description }}</p>
+              <h6 v-if="education.title">{{ education.title }}</h6>
+              <p v-if="education.description">{{ education.description }}</p>
+            </div>
+            <div class="education-item" v-if="!isObjectEmpty(newEducation)">
+              <h4 v-if="newEducation.start">
+                {{ newEducation.start }} - {{ newEducation.end }}
+              </h4>
+              <h5>
+                {{ newEducation.school
+                }}<span v-if="newEducation.school && newEducation.place"
+                  >,</span
+                >
+                {{ newEducation.place }}
+              </h5>
+              <h6 v-if="newEducation.title">{{ newEducation.title }}</h6>
+              <p v-if="newEducation.description">
+                {{ newEducation.description }}
+              </p>
             </div>
           </div>
         </div>
-        <div class="section" v-if="resume.experiences.length">
+        <div
+          class="section"
+          v-if="!isArrayEmpty(experiences) || !isObjectEmpty(newExperience)"
+        >
           <h3>Experience</h3>
           <div class="line"></div>
           <div class="experience-list">
             <div
-              v-for="experience in resume.experiences"
+              v-for="experience in experiences"
               :key="experience.id"
               class="experience-item"
             >
-              <h4>{{ experience.start }} - {{ experience.end }}</h4>
-              <h5>{{ experience.employer }}, {{ experience.place }}</h5>
-              <h6>{{ experience.title }}</h6>
-              <p>{{ experience.description }}</p>
+              <h4 v-if="experience.start">
+                {{ experience.start }} - {{ experience.end }}
+              </h4>
+              <h5>
+                {{ experience.employer
+                }}<span v-if="experience.employer && experience.place">,</span>
+                {{ experience.place }}
+              </h5>
+              <h6 v-if="experience.title">{{ experience.title }}</h6>
+              <p v-if="experience.description">{{ experience.description }}</p>
             </div>
+          </div>
+          <div class="experience-item" v-if="!isObjectEmpty(newExperience)">
+            <h4 v-if="newExperience.start">
+              {{ newExperience.start }} - {{ newExperience.end }}
+            </h4>
+            <h5>
+              {{ newExperience.employer
+              }}<span v-if="newExperience.employer && newExperience.place"
+                >,</span
+              >
+              {{ newExperience.place }}
+            </h5>
+            <h6 v-if="newExperience.title">{{ newExperience.title }}</h6>
+            <p v-if="newExperience.description">
+              {{ newExperience.description }}
+            </p>
           </div>
         </div>
       </div>
@@ -104,23 +142,30 @@
 </template>
 
 <script setup>
-import { onBeforeMount, reactive } from "vue";
-import { useResumeStore } from "@/store/cvStore";
+import { ref } from "vue";
 
-const resumeStore = useResumeStore();
-let resume = reactive({});
+const props = defineProps(["resumeDetails"]);
+const resume = ref(props.resumeDetails.currentResume);
+const educations = ref(resume.value.educations);
+const experiences = ref(resume.value.experiences);
+const skills = ref(resume.value.skills);
+const socials = ref(resume.value.socials);
+const newEducation = ref(props.resumeDetails.newEducation);
+const newExperience = ref(props.resumeDetails.newExperience);
 
-onBeforeMount(() => {
-  resume = resumeStore.currentResume;
-  console.log("ressume", resume);
-});
+const isObjectEmpty = (obj) => {
+  return Object.keys(obj).every((key) => obj[key] === "");
+};
+const isArrayEmpty = (array) => {
+  return array.length === 0;
+};
 </script>
 
 <style lang="scss" scoped>
 .cv-template {
-  font-family: "Poppins";
   width: 210mm;
   height: 297mm;
+  overflow: scroll;
   display: flex;
   flex-direction: column;
   background-color: white;

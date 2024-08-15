@@ -39,7 +39,10 @@
         <div class="line"></div>
         <p>{{ resume.professionalSummary }}</p>
       </div>
-      <div class="section" v-if="educations.length">
+      <div
+        class="section"
+        v-if="!isArrayEmpty(educations) || !isObjectEmpty(newEducation)"
+      >
         <h3>Education</h3>
         <div class="line"></div>
         <div class="education-list">
@@ -48,14 +51,35 @@
             :key="index"
             class="education-item"
           >
-            <h4>{{ education.start }} - {{ education.end }}</h4>
-            <h5>{{ education.school }}, {{ education.place }}</h5>
+            <h4>
+              {{ education.start }} <span v-if="education.end">-</span>
+              {{ education.end }}
+            </h4>
+            <h5>
+              {{ education.school }}<span v-if="education.place">,</span>
+              {{ education.place }}
+            </h5>
             <h6>{{ education.title }}</h6>
             <p>{{ education.description }}</p>
           </div>
+          <div class="education-item" v-if="!isObjectEmpty(newEducation)">
+            <h4>
+              {{ newEducation.start }} <span v-if="newEducation.end">-</span>
+              {{ newEducation.end }}
+            </h4>
+            <h5>
+              {{ newEducation.school }}<span v-if="newEducation.place">,</span>
+              {{ newEducation.place }}
+            </h5>
+            <h6>{{ newEducation.title }}</h6>
+            <p>{{ newEducation.description }}</p>
+          </div>
         </div>
       </div>
-      <div class="section" v-if="experiences.length">
+      <div
+        class="section"
+        v-if="!isArrayEmpty(experiences) || !isObjectEmpty(newExperience)"
+      >
         <h3>Experience</h3>
         <div class="line"></div>
         <div class="experience-list">
@@ -64,10 +88,29 @@
             :key="experience.id"
             class="experience-item"
           >
-            <h4>{{ experience.start }} - {{ experience.end }}</h4>
-            <h5>{{ experience.employer }}, {{ experience.place }}</h5>
+            <h4>
+              {{ experience.start }} <span v-if="experience.end">-</span>
+              {{ experience.end }}
+            </h4>
+            <h5>
+              {{ experience.employer }}<span v-if="experience.place">,</span>
+              {{ experience.place }}
+            </h5>
             <h6>{{ experience.title }}</h6>
             <p>{{ experience.description }}</p>
+          </div>
+          <div class="experience-item" v-if="!isObjectEmpty(newExperience)">
+            <h4>
+              {{ newExperience.start }} <span v-if="newExperience.end">-</span>
+              {{ newExperience.end }}
+            </h4>
+            <h5>
+              {{ newExperience.employer
+              }}<span v-if="newExperience.place">,</span>
+              {{ newExperience.place }}
+            </h5>
+            <h6>{{ newExperience.title }}</h6>
+            <p>{{ newExperience.description }}</p>
           </div>
         </div>
       </div>
@@ -85,41 +128,28 @@
 </template>
 
 <script setup>
-import { ref, watch } from "vue";
-import { useResumeStore } from "@/store/cvStore";
+import { ref } from "vue";
 
-const props = defineProps(["templateColor"]);
-const resumeStore = useResumeStore();
+const props = defineProps(["resumeDetails"]);
+const resume = ref(props.resumeDetails.currentResume);
+const educations = ref(resume.value.educations);
+const experiences = ref(resume.value.experiences);
+const skills = ref(resume.value.skills);
+const socials = ref(resume.value.socials);
+const newEducation = ref(props.resumeDetails.newEducation);
+const newExperience = ref(props.resumeDetails.newExperience);
 
-const localTemplateColor = ref(props.templateColor);
-const experiences = ref([]);
-const educations = ref([]);
-const socials = ref([]);
-const skills = ref([]);
-const resume = ref({});
-
-watch(
-  () => resumeStore.currentResume,
-  (newResume) => {
-    resume.value = newResume;
-    experiences.value = newResume.experiences;
-    educations.value = newResume.educations;
-    socials.value = newResume.socials;
-    skills.value = newResume.skills;
-  },
-  { immediate: true, deep: true }
-);
-
-watch(
-  () => props.templateColor,
-  (newColor) => {
-    localTemplateColor.value = newColor;
-  }
-);
+const isObjectEmpty = (obj) => {
+  return Object.keys(obj).every((key) => obj[key] === "");
+};
+const isArrayEmpty = (array) => {
+  return array.length === 0;
+};
 </script>
 
 <style lang="scss" scoped>
 .cv-template {
+  overflow: scroll;
   font-family: "Poppins";
   width: 210mm;
   height: 297mm;

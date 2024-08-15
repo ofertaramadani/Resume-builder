@@ -1,6 +1,5 @@
 .skills {
     display: flex;
-    font-family: 'Poppins';
     gap: 20px;
     flex-direction: column;
     margin-top: 30px;
@@ -48,7 +47,6 @@
         &-input {
             width: 100%;
             input {
-                font-family: 'Poppins';
                 padding: 12px 10px;
                 background-color: #EFF2F9;
                 border:none;

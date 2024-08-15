@@ -1,5 +1,10 @@
 .create-resume{
     display: flex;
+    .white {
+        color: white;
+        font-size: 14px;
+        font-style: italic;
+    }
     .input-color {
         width: 35px;
         height: 25px;
@@ -8,7 +13,6 @@
         padding: 0;
     }
     &__back {
-        font-family: 'Poppins';
         transition:0.3s ease-in-out;
         font-size: 20px;
         color: #6f6f74;
@@ -62,7 +66,6 @@
             justify-content: space-between;
             align-items: center;
             & h2 {
-            font-family: 'Poppins';
             font-size: 20px;
             color: #A2A2A8;
             font-weight: 600;
@@ -83,7 +86,6 @@
 }
 
 input, textarea {
-    font-family: 'Poppins';
     padding: 12px 10px;
     background-color: #EFF2F9;
     border:none;

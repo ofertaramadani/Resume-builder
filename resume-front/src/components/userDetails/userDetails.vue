@@ -1,5 +1,8 @@
 <template>
   <div class="card">
+    <div class="img" @click="deleteResume">
+      <img src="@/assets/icons/trash.svg" alt="" />
+    </div>
     <div class="card-body">
       <h2 class="full-name">{{ fullName }}</h2>
       <p class="title">{{ title }}</p>
@@ -30,7 +33,7 @@ const city = computed(() => props.data.city);
 const country = computed(() => props.data.country);
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .card {
   margin: 0 auto;
   background-color: white;
@@ -38,6 +41,21 @@ const country = computed(() => props.data.country);
   border-radius: 8px;
   overflow: hidden;
   width: 100%;
+  position: relative;
+}
+
+.img {
+  width: 25px;
+  height: 35px;
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  z-index: 9999;
+  cursor: pointer;
+  & img {
+    width: 100%;
+    height: 100%;
+  }
 }
 
 .card-header {
@@ -48,6 +66,11 @@ const country = computed(() => props.data.country);
 
 .card-body {
   padding: 16px;
+  cursor: pointer;
+  transition: transform 330ms ease-in-out;
+  &:hover {
+    transform: scale(1.03);
+  }
 }
 
 .full-name {

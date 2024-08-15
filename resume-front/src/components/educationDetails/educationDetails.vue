@@ -2,7 +2,7 @@
   <div>
     <div
       class="education__wrap"
-      v-for="(education, index) in allEducations"
+      v-for="(education, index) in resumeStore.currentResume.educations"
       :key="index"
     >
       <div @click="openEdu(index)" class="education__tab">
@@ -71,7 +71,6 @@
         <textarea type="text" v-model="newEducation.description"></textarea>
       </div>
     </div>
-    {{ resumeStore.newEducation }}
     <button @click="addNewEducation" class="education__btn">
       <p>Add +</p>
     </button>
@@ -79,26 +78,12 @@
 </template>
 
 <script setup>
-import { onBeforeMount, reactive, ref, watch } from "vue";
+import { onBeforeMount, reactive, ref } from "vue";
 import { useResumeStore } from "@/store/cvStore";
 let resumeStore = useResumeStore();
 
-let allEducations = ref([]);
 let isOpen = ref([]);
 let newEducation = reactive();
-watch(
-  resumeStore.currentResume,
-  async (newVal) => {
-    if (resumeStore.addedEducations.length > 0) {
-      allEducations.value = newVal.educations.concat(
-        resumeStore.addedEducations
-      );
-    } else {
-      allEducations.value = newVal.educations;
-    }
-  },
-  { deep: true, immediate: true }
-);
 
 function removeEducation(education) {
   resumeStore.removeEducation(education);

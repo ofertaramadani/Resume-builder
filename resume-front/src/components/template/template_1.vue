@@ -1,65 +1,51 @@
 <template>
   <div class="template_1 template">
-    <div class="template-side" :style="{ backgroundColor: localTemplateColor }">
+    <div class="template-side">
       <div class="template-side__personal">
         <div
           class="template-side__info template-side__info-profile"
-          v-if="props.resume.photo"
+          v-if="resume.photo"
         >
           <div class="template-side__info-img">
-            <img :src="props.resume.photo" alt="User Photo" />
+            <img :src="resume.photo" alt="User Photo" />
           </div>
         </div>
         <div
           class="template-side__info-title"
-          v-if="
-            props.resume.email ||
-            props.resume.phone ||
-            props.resume.city ||
-            props.resume.country
-          "
+          v-if="resume.email || resume.phone || resume.city || resume.country"
         >
           <h2>Contact</h2>
           <div class="line"></div>
-          <div class="template-side__info" v-if="props.resume.email">
+          <div class="template-side__info" v-if="resume.email">
             <img src="../../assets/icons/email-icon.svg" alt="" />
-            <p>{{ props.resume.email }}</p>
+            <p>{{ resume.email }}</p>
           </div>
-          <div class="template-side__info" v-if="props.resume.phone">
+          <div class="template-side__info" v-if="resume.phone">
             <img src="../../assets/icons/phone-icon.svg" alt="" />
-            <p>{{ props.resume.phone }}</p>
+            <p>{{ resume.phone }}</p>
           </div>
-          <div
-            class="template-side__info"
-            v-if="props.resume.country || props.resume.city"
-          >
+          <div class="template-side__info" v-if="resume.country || resume.city">
             <img src="../../assets/icons/place-icon.svg" alt="" />
-            <p>{{ props.resume.country }}, {{ props.resume.city }}</p>
+            <p>{{ resume.country }}, {{ resume.city }}</p>
           </div>
         </div>
-        <div
-          class="template-side__info-title"
-          v-if="props.resume.socials.length"
-        >
+        <div class="template-side__info-title" v-if="socials.length">
           <h2>Socials</h2>
           <div class="line"></div>
           <div class="template-side__info">
             <ul>
-              <li v-for="(social, index) in props.resume.socials" :key="index">
+              <li v-for="(social, index) in socials" :key="index">
                 <p>{{ social.name }}</p>
               </li>
             </ul>
           </div>
         </div>
-        <div
-          class="template-side__info-title"
-          v-if="props.resume.skills.length"
-        >
+        <div class="template-side__info-title" v-if="skills.length">
           <h2>Skills</h2>
           <div class="line"></div>
           <div class="template-side__info">
             <ul>
-              <li v-for="(skill, index) in props.resume.skills" :key="index">
+              <li v-for="(skill, index) in skills" :key="index">
                 <p>{{ skill.name }}</p>
               </li>
             </ul>
@@ -69,25 +55,25 @@
     </div>
     <div class="template-info">
       <div class="template-info__wrap">
-        <div class="template-info__title">
-          <h1>{{ props.resume.firstname }} {{ props.resume.lastname }}</h1>
-          <h2>{{ props.resume.title }}</h2>
+        <div class="template-info__title" v-if="resume.firstname">
+          <h1>{{ resume.firstname }} {{ resume.lastname }}</h1>
+          <h2>{{ resume.title }}</h2>
+        </div>
+        <div class="template-info__summary" v-if="resume.professionalSummary">
+          <h2>Professional Summary</h2>
+          <div class="line"></div>
+          <p>{{ resume.professionalSummary }}</p>
         </div>
         <div
           class="template-info__summary"
-          v-if="props.resume.professionalSummary"
+          v-if="!isArrayEmpty(educations) || !isObjectEmpty(newEducation)"
         >
-          <h2>Professional Summary</h2>
-          <div class="line"></div>
-          <p>{{ props.resume.professionalSummary }}</p>
-        </div>
-        <div class="template-info__summary">
           <h2>Education</h2>
           <div class="line"></div>
           <div class="template-info__education">
             <div
               class="template-info__education-wrap"
-              v-for="(education, index) in props.resume.educations"
+              v-for="(education, index) in educations"
               :key="index"
             >
               <h4 v-if="education.start">
@@ -101,41 +87,41 @@
               <h2 v-if="education.title">{{ education.title }}</h2>
               <p v-if="education.description">{{ education.description }}</p>
             </div>
-            <div class="template-info__education-wrap">
-              <h4 v-if="props.resume.newEducation.start">
-                {{ props.resume.newEducation.start
-                }}<span v-if="props.resume.newEducation.end"> / </span
-                >{{ props.resume.newEducation.end }}
+            <div
+              class="template-info__education-wrap"
+              v-if="!isObjectEmpty(newEducation)"
+            >
+              <h4 v-if="newEducation.start">
+                {{ newEducation.start }}<span v-if="newEducation.end"> / </span
+                >{{ newEducation.end }}
               </h4>
-              <h3
-                v-if="
-                  props.resume.newEducation.school ||
-                  props.resume.newEducation.place
-                "
-              >
-                <span v-if="props.resume.newEducation.school">{{
-                  props.resume.newEducation.school
+              <h3 v-if="newEducation.school || newEducation.place">
+                <span v-if="newEducation.school">{{
+                  newEducation.school
                 }}</span>
-                <span v-if="props.resume.newEducation.place">
-                  - {{ props.resume.newEducation.place }}</span
+                <span v-if="newEducation.place">
+                  - {{ newEducation.place }}</span
                 >
               </h3>
-              <h2 v-if="props.resume.newEducation.title">
-                {{ props.resume.newEducation.title }}
+              <h2 v-if="newEducation.title">
+                {{ newEducation.title }}
               </h2>
-              <p v-if="props.resume.newEducation.description">
-                {{ props.resume.newEducation.description }}
+              <p v-if="newEducation.description">
+                {{ newEducation.description }}
               </p>
             </div>
           </div>
         </div>
-        <div class="template-info__summary">
+        <div
+          class="template-info__summary"
+          v-if="!isArrayEmpty(experiences) || !isObjectEmpty(newExperience)"
+        >
           <h2>Experience</h2>
           <div class="line"></div>
           <div class="template-info__education">
             <div
               class="template-info__education-wrap"
-              v-for="experience in props.resume.experiences"
+              v-for="experience in experiences"
               :key="experience.id"
             >
               <h4>
@@ -151,27 +137,25 @@
               <h2>{{ experience.title }}</h2>
               <p>{{ experience.description }}</p>
             </div>
-            <div class="template-info__education-wrap">
+            <div
+              class="template-info__education-wrap"
+              v-if="!isObjectEmpty(newExperience)"
+            >
               <h4>
-                {{ props.resume.newExperience.start
-                }}<span v-if="props.resume.newExperience.end"> / </span
-                >{{ props.resume.newExperience.end }}
+                {{ newExperience.start
+                }}<span v-if="newExperience.end"> / </span
+                >{{ newExperience.end }}
               </h4>
-              <h3
-                v-if="
-                  props.resume.newExperience.employer ||
-                  props.resume.newExperience.place
-                "
-              >
-                <span v-if="props.resume.newExperience.employer">{{
-                  props.resume.newExperience.employer
+              <h3 v-if="newExperience.employer || newExperience.place">
+                <span v-if="newExperience.employer">{{
+                  newExperience.employer
                 }}</span>
-                <span v-if="props.resume.newExperience.place">
-                  - {{ props.resume.newExperience.place }}</span
+                <span v-if="newExperience.place">
+                  - {{ newExperience.place }}</span
                 >
               </h3>
-              <h2>{{ props.resume.newExperience.title }}</h2>
-              <p>{{ props.resume.newExperience.description }}</p>
+              <h2>{{ newExperience.title }}</h2>
+              <p>{{ newExperience.description }}</p>
             </div>
           </div>
         </div>
@@ -181,12 +165,28 @@
 </template>
 
 <script setup>
-const props = defineProps(["resume"]);
+import { ref } from "vue";
+
+const props = defineProps(["resumeDetails"]);
+const resume = ref(props.resumeDetails.currentResume);
+const educations = ref(resume.value.educations);
+const experiences = ref(resume.value.experiences);
+const skills = ref(resume.value.skills);
+const socials = ref(resume.value.socials);
+const newEducation = ref(props.resumeDetails.newEducation);
+const newExperience = ref(props.resumeDetails.newExperience);
+
+const isObjectEmpty = (obj) => {
+  return Object.keys(obj).every((key) => obj[key] === "");
+};
+const isArrayEmpty = (array) => {
+  return array.length === 0;
+};
 </script>
 
 <style lang="scss" scoped>
 .template {
-  font-family: "Poppins";
+  overflow: scroll;
   width: 210mm;
   height: 297mm;
   display: flex;
@@ -194,8 +194,9 @@ const props = defineProps(["resume"]);
   margin-bottom: 50px;
   &-side {
     width: 35%;
+    background-color: #171740;
     height: 100%;
-    background-color: rgb(29, 18, 91);
+    color: white;
     &__personal {
       padding: 30px;
       display: flex;
@@ -213,7 +214,6 @@ const props = defineProps(["resume"]);
         gap: 10px;
         & h2 {
           font-size: 16px;
-          color: white;
           font-weight: 600;
         }
         .line {
@@ -238,7 +238,6 @@ const props = defineProps(["resume"]);
       }
       & p {
         font-size: 12px;
-        color: white;
         font-weight: 400;
       }
       & ul {

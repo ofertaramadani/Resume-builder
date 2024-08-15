@@ -2,3 +2,26 @@
 @import "./global/mixins.scss";
 @import "./global/reset.scss";
 @import "./global/fonts.scss";
+
+.required {
+    position: relative;
+    width: fit-content;
+}
+.required::after {
+    position: absolute;
+    content:'*';
+    top:0;
+    right: -10px;
+}
+#app {
+    font-family: 'Poppins',sans-serif;
+    h1 {
+        line-height: 50px;
+    }
+    h2,h3,h4,h5,h6 {
+        line-height: 24px;
+    }
+    & p {
+        line-height: 20px;
+    }
+}

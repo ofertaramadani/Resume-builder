@@ -117,7 +117,6 @@ const logout = () => {
 };
 
 const chooseTemplate = (template) => {
-  console.log("clicked", template);
   templateStore.storeTemplate(template);
   router.push(`/resume/${template}`);
 };

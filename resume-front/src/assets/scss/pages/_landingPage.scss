@@ -9,7 +9,6 @@
 }
 .home {
   &__hero{
-    font-family: 'Poppins';
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -47,9 +46,16 @@
         background-color:#f7f9fb;
     }
     &__left {
+        position: relative;
         & img {
             width: 400px;
             object-fit: contain;
+            box-shadow: rgba(255, 255, 255, 0.1) 0px 1px 1px 0px inset, rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px;
+        }
+        .img-absolute {
+            position: absolute;
+            left: 150px;
+            transform: rotate(20deg);
         }
     }
     &__right{
@@ -64,7 +70,6 @@
             margin-bottom: 30px;
             font-weight:600;
             color: #13287e;
-            font-family: 'Poppins';
         }
         & h5 {
             display: flex;
@@ -74,7 +79,6 @@
             margin-bottom: 30px;
             font-weight:600;
             color: #212529;
-            font-family: 'Poppins';
             &::before {
                 content: url('~@/assets/icons/checkmark.svg');
                 width: 20px;
@@ -85,7 +89,6 @@
 }
 
 .templates{
-    font-family: 'Poppins';
     &__wrapper{
         padding: 100px 0;
     }

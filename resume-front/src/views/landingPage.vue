@@ -9,7 +9,9 @@
             template and start giving your informations to fill the fields.
           </p>
           <div class="home__hero-btn">
-            <buttonElement @click="goTo">{{ store.isLoggedIn ? 'Go to dashboard':'Choose a template'}}</buttonElement>
+            <buttonElement @click="goTo">{{
+              store.isLoggedIn ? "Go to dashboard" : "Choose a template"
+            }}</buttonElement>
           </div>
         </div>
         <div class="home__hero-img">
@@ -22,7 +24,12 @@
     <div class="container">
       <div class="qualities">
         <div class="qualities__left">
-          <img src="../assets/images/2.jpg" alt="" />
+          <img src="@/assets/images/template_5.png" alt="" />
+          <img
+            class="img-absolute"
+            src="@/assets/images/template_1.png"
+            alt=""
+          />
         </div>
         <div class="qualities__right">
           <h2>Why you should choose us</h2>
@@ -34,45 +41,22 @@
       </div>
     </div>
   </section>
-  <section class="templates__wrapper">
-    <div class="container">
-      <div class="templates">
-        <h2 class="templates__title">Recent templates</h2>
-        <p class="templates__text">
-          Here a 3 most recent templates that can boost your hiring rates
-        </p>
-        <div class="templates__group">
-          <div class="templates__single">
-            <img src="../assets/images/2.jpg" alt="" />
-            <buttonElement class="btn__template">Use Template</buttonElement>
-          </div>
-          <div class="templates__single">
-            <img src="../assets/images/2.jpg" alt="" />
-            <buttonElement class="btn__template">Use Template</buttonElement>
-          </div>
-          <div class="templates__single">
-            <img src="../assets/images/2.jpg" alt="" />
-            <buttonElement class="btn__template">Use Template</buttonElement>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
+  <section><appFooter /></section>
 </template>
 <script setup>
-import { inject } from 'vue';
-
-import buttonElement from '../components/button/buttonElement.vue';
+import { inject } from "vue";
+import buttonElement from "../components/button/buttonElement.vue";
+import appFooter from "@/components/appFooter.vue";
 import { auth } from "@/store/auth";
 
-const router = inject('router');
+const router = inject("router");
 const store = auth();
-function goTo(){
-if(store.isLoggedIn){
-    router.push('/dashboard')
-} else {
-    router.push('/login')
-}
+function goTo() {
+  if (store.isLoggedIn) {
+    router.push("/dashboard");
+  } else {
+    router.push("/login");
+  }
 }
 </script>
 

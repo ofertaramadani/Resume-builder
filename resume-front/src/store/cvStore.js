@@ -5,7 +5,57 @@ export const useResumeStore = defineStore("resume", {
   state: () => ({
     resumes: [],
     resumeToBeUpdated: null,
+    dummyObject: {
+      photo: "https://via.placeholder.com/150",
+      email: "example@example.com",
+      phone: "+1234567890",
+      city: "Sample City",
+      country: "Sample Country",
+      firstname: "John",
+      lastname: "Doe",
+      title: "Software Engineer",
+      professionalSummary:
+        "Experienced software engineer with a demonstrated history of working in the tech industry. Skilled in various programming languages and frameworks.",
+      socials: [
+        { name: "https://linkedin.com" },
+        { name: "https://github.com" },
+        { name: "https://twitter.com" },
+      ],
+      skills: [{ name: "JavaScript" }, { name: "Vue.js" }, { name: "Node.js" }],
+      educations: [
+        {
+          start: "2015",
+          end: "2019",
+          school: "University of Sample",
+          place: "Sample City",
+          title: "Bachelor of Science in Computer Science",
+          description:
+            "Graduated with honors, focusing on software development and data structures.",
+        },
+      ],
+      experiences: [
+        {
+          start: "2020",
+          end: "2022",
+          employer: "Tech Corp",
+          place: "Sample City",
+          title: "Frontend Developer",
+          description:
+            "Developed user interfaces using Vue.js and maintained application performance.",
+        },
+        {
+          start: "2022",
+          end: "2023",
+          employer: "Tech Corp",
+          place: "Sample City",
+          title: "Frontend Developer",
+          description:
+            "Developed user interfaces using Vue.js and maintained application performance.",
+        },
+      ],
+    },
     currentResume: {
+      photo: "",
       educations: [],
       experiences: [],
       socials: [],
@@ -44,7 +94,7 @@ export const useResumeStore = defineStore("resume", {
     async createResume(resume) {
       try {
         this.addEducation();
-        console.log("resume create", resume);
+        this.addExperience();
         return await api({ requiresAuth: true }).post("/cv", resume);
       } catch (error) {
         console.error("Errorj", error);
@@ -53,10 +103,9 @@ export const useResumeStore = defineStore("resume", {
     async updateResume(resume) {
       try {
         this.addEducation();
-        console.log("resume update", resume);
+        this.addExperience();
         const cvId = this.currentResume.id;
-        let res = await api({ requiresAuth: true }).put(`/cv/${cvId}`, resume);
-        console.log("On update response:", res);
+        return await api({ requiresAuth: true }).put(`/cv/${cvId}`, resume);
       } catch (error) {
         console.error(error);
       }
@@ -64,7 +113,6 @@ export const useResumeStore = defineStore("resume", {
     async getResumes() {
       try {
         const resumes = await api({ requiresAuth: true }).get("/cv");
-        console.log("rrrs", resumes);
         this.resumes = resumes.data;
       } catch (error) {
         console.error(error);
@@ -102,15 +150,16 @@ export const useResumeStore = defineStore("resume", {
       });
     },
     removeSocial(social) {
-      console.log(social, "social");
       this.currentResume.socials = this.currentResume.socials.filter((sc) => {
         return sc.name !== social.name;
       });
-      console.log("this.currentResume", this.currentResume);
     },
     addEducation() {
-      if (!(Object.keys(this.newEducation).length === 0)) {
-        console.log("education added");
+      const hasNonEmptyValue = Object.values(this.newEducation).some(
+        (value) => value !== ""
+      );
+
+      if (hasNonEmptyValue) {
         this.currentResume.educations.push(this.newEducation);
         this.setDefaultEducation();
       }
@@ -126,8 +175,11 @@ export const useResumeStore = defineStore("resume", {
       };
     },
     addExperience() {
-      if (!(Object.keys(this.newExperience).length === 0)) {
-        console.log("education added");
+      const hasNonEmptyValue = Object.values(this.newExperience).some(
+        (value) => value !== ""
+      );
+
+      if (hasNonEmptyValue) {
         this.currentResume.experiences.push(this.newExperience);
         this.setDefaultExperience();
       }
@@ -153,9 +205,23 @@ export const useResumeStore = defineStore("resume", {
         let res = await api({ requiresAuth: true }).post("/skill/extract", {
           jobDescription: jobDescription,
         });
-        console.log("On update response:", res);
       } catch (error) {
         console.error(error);
+      }
+    },
+    validateFields() {
+      if (
+        this.currentResume.firstname &&
+        this.currentResume.lastname &&
+        this.currentResume.title &&
+        this.currentResume.email &&
+        this.currentResume.phone &&
+        this.currentResume.country &&
+        this.currentResume.city &&
+        this.currentResume.professionalSummary
+      ) {
+        console.log("urjok", this.currentResume);
+        return true;
       }
     },
   },

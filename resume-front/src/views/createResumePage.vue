@@ -38,7 +38,7 @@
           />
         </div>
         <textarea
-          placeholder="Add your professional summary here"
+          placeholder="Add your professional summary here *"
           v-show="openTabs['summary']"
           class="create-resume__professional-text"
           @input="updateProfessionalSummary"
@@ -133,13 +133,13 @@
         ref="html2Pdf"
       >
         <template v-slot:pdf-content>
-          <component :is="chosenTemplate" :resume="resume.currentResume" />
+          <component :is="chosenTemplate" :resumeDetails="resume" />
         </template>
       </vue3-html2pdf>
       <div class="create-resume__template-wrap">
-        <component :is="chosenTemplate" />
+        <component :is="chosenTemplate" :resumeDetails="resume" />
       </div>
-      <div class="save-icons">
+      <div class="save-icons" v-if="resume.validateFields()">
         <img
           v-if="notSaved"
           src="../assets/icons/download-icon.svg"
@@ -151,6 +151,9 @@
           <span class="loader"></span>
           <span class="loader"></span>
         </span>
+      </div>
+      <div class="create-resume__template-btn white" v-else>
+        Fill the required (*) fields, to download save the resume
       </div>
     </div>
   </div>
@@ -212,7 +215,7 @@ async function generatePDF() {
       : await resume.createResume(resume.currentResume);
     resumeFinished.value = true;
     notSaved.value = false;
-    // html2Pdf.value.generatePdf();
+    html2Pdf.value.generatePdf();
     setTimeout(() => {
       notSaved.value = true;
     }, 3000);

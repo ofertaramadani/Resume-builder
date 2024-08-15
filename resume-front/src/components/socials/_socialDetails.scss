@@ -1,10 +1,8 @@
 .socials {
-    font-family: 'Poppins';
     margin-top: 30px;
     & a {
         text-decoration: none;
         color: #828ba2;
-        font-family: "Poppins";
         font-size: 14px;
         margin-bottom: 5px
     }
@@ -52,7 +50,6 @@
             &-input {
                 width: 100%;
                 input {
-                    font-family: 'Poppins';
                     padding: 12px 10px;
                     background-color: #EFF2F9;
                     border:none;
