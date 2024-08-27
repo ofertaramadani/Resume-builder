@@ -12,16 +12,21 @@
     <div class="personal-details__input">
       <p class="personal-details__input-title">Photo</p>
       <div class="personal-details__photo">
+        sdfdsf {{ resumePersonalDetails.photo }}
         <input
           type="file"
           accept="image/jpeg/png"
-          @change="handlePhotoUpload"
+          @change="handleFileChange"
+          v-if="!resumePersonalDetails.photo"
         />
-        <img
-          v-if="personalDetailsStore.userPhoto"
-          :src="resumePersonalDetails.photo"
-          alt="User Photo"
-        />
+        <div class="personal-details__remove-img" v-else>
+          <img
+            :src="`http://localhost:3000${resumePersonalDetails.photo}`"
+            alt="User Photo"
+            class="user-img"
+          />
+          <p @click="removeProfileImg()">Remove</p>
+        </div>
       </div>
     </div>
     <div class="personal-details__input">
@@ -61,8 +66,14 @@ var resumePersonalDetails = reactive({});
 onBeforeMount(() => {
   resumePersonalDetails = resumeStore.currentResume;
 });
-const handlePhotoUpload = (event) => {
-  resumeStore.currentResume.photo = event.target.files[0];
+const handleFileChange = async (event) => {
+  const file = event.target.files[0];
+  if (file) {
+    await resumeStore.uploadImage(file);
+  }
+};
+const removeProfileImg = async () => {
+  await resumeStore.removeImage();
 };
 </script>
 

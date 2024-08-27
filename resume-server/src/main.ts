@@ -4,7 +4,6 @@ import { RequestMethod, ValidationPipe } from '@nestjs/common';
 import { WinstonModule } from 'nest-winston';
 import loggerInstance from './services/logger/winstonLogger';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-
 const port = process.env.PORT || 3000;
 
 async function bootstrap() {

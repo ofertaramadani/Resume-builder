@@ -53,10 +53,11 @@
           <h2>Update exisiting resumes</h2>
           <div class="dashboard__existing-resumes">
             <userDetails
-              v-for="resume in resumes"
+              v-for="resume in resumeStore.resumes"
               :data="resume"
               :key="resume.uuid"
               @click="modifyResume(resume.id)"
+              @delete-cv="resumeStore.deleteResume(resume.id)"
             />
           </div>
         </div>
@@ -102,7 +103,6 @@ const isDashboardVisible = ref(false);
 const isTemplatesVisible = ref(false);
 
 let loading = ref(true);
-let resumes = reactive([]);
 
 const openDashboard = () => {
   isTemplatesVisible.value = false;
@@ -135,7 +135,6 @@ onMounted(async () => {
     resumeStore.resumeToBeUpdated = null;
     await resumeStore.getResumes();
     await templateStore.getTemplates();
-    resumes = resumeStore.resumes;
   } catch (e) {
     console.error(e);
   } finally {

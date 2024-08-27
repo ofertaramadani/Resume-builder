@@ -181,6 +181,7 @@ let updateCvId = ref("");
 let chosenTemplate = ref("");
 let resumeFinished = ref(false);
 let notSaved = ref(true);
+let generateFromRouterLeave = ref(false);
 const openTabs = reactive({
   personal: true,
   summary: false,
@@ -215,21 +216,22 @@ async function generatePDF() {
       : await resume.createResume(resume.currentResume);
     resumeFinished.value = true;
     notSaved.value = false;
-    html2Pdf.value.generatePdf();
+    if (!generateFromRouterLeave.value) {
+      html2Pdf.value.generatePdf();
+    }
     setTimeout(() => {
       notSaved.value = true;
     }, 3000);
   } catch (error) {
     console.error(error);
-    alert("Sorry could not save cv");
   }
 }
 onBeforeRouteLeave(async (to, from, next) => {
   if (resumeFinished.value === false) {
+    generateFromRouterLeave.value = true;
     await generatePDF();
   }
   resume.resumeToBeUpdated = null;
-  location.reload();
   next(); // Ensure to call next() to proceed with navigation
 });
 onMounted(async () => {
@@ -243,6 +245,7 @@ onMounted(async () => {
       await resume.getResume(updateCvId.value);
       professionalSummary.value = resume.currentResume.professionalSummary;
     }
+    resume.getSkillsBasedOnProfession();
   } catch (e) {
     console.error("e", e);
   } finally {

@@ -1,6 +1,8 @@
 import { defineStore } from "pinia";
 import api from "@/api/api";
+import { useToast } from "vue-toastification";
 
+const toast = useToast();
 export const useResumeStore = defineStore("resume", {
   state: () => ({
     resumes: [],
@@ -91,12 +93,39 @@ export const useResumeStore = defineStore("resume", {
   }),
 
   actions: {
+    async getSkillsBasedOnProfession() {
+      const jobDescription =
+        "nice very programmer vue js react web development"; // Retrieve a job description based on the profession
+
+      const response = await fetch(
+        "https://api.edenai.run/v1/pretrained/nlp/keyword_extraction",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer YeyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNzA4ODBjZGYtZjFhZC00MjFmLWFhZjktNDQ5YzY3YzlkYWY4IiwidHlwZSI6ImFwaV90b2tlbiJ9.r_ZwJ3Fy_s6nL06JKFpb4NUoujhcTKzC1xeOmu79i_Y`, // Replace with your API key
+          },
+          body: JSON.stringify({
+            text: jobDescription,
+            language: "en", // Language of the text
+          }),
+        }
+      );
+
+      const data = await response.json();
+
+      console.log("AAIIIIIII", data);
+      // const skills = extractSkillsFromResponse(data);
+      return data;
+    },
     async createResume(resume) {
       try {
         this.addEducation();
         this.addExperience();
-        return await api({ requiresAuth: true }).post("/cv", resume);
+        await api({ requiresAuth: true }).post("/cv", resume);
+        toast.success("Resume created successfully!");
       } catch (error) {
+        toast.error("Could not create resume, try again!");
         console.error("Errorj", error);
       }
     },
@@ -105,10 +134,25 @@ export const useResumeStore = defineStore("resume", {
         this.addEducation();
         this.addExperience();
         const cvId = this.currentResume.id;
-        return await api({ requiresAuth: true }).put(`/cv/${cvId}`, resume);
+        await api({ requiresAuth: true }).put(`/cv/${cvId}`, resume);
+        toast.success("Resume updated successfully!");
       } catch (error) {
+        toast.error("Could not update resume!");
         console.error(error);
       }
+    },
+    async deleteResume(id) {
+      try {
+        await api({ requiresAuth: true }).delete(`/cv/${id}`);
+        this.removeResume(id);
+        toast.success("Resume deleted successfully!");
+      } catch (error) {
+        toast.error("Could not delete resume!");
+        console.error(error);
+      }
+    },
+    removeResume(id) {
+      this.resumes = this.resumes.filter((resume) => resume.id !== id);
     },
     async getResumes() {
       try {
@@ -202,7 +246,7 @@ export const useResumeStore = defineStore("resume", {
     },
     async getAiSkills(jobDescription) {
       try {
-        let res = await api({ requiresAuth: true }).post("/skill/extract", {
+        await api({ requiresAuth: true }).post("/skill/extract", {
           jobDescription: jobDescription,
         });
       } catch (error) {
@@ -222,6 +266,34 @@ export const useResumeStore = defineStore("resume", {
       ) {
         console.log("urjok", this.currentResume);
         return true;
+      }
+    },
+    async uploadImage(file) {
+      const cvId = this.currentResume.id;
+      const formData = new FormData();
+      formData.append("photo", file);
+
+      try {
+        const response = await api({ requiresAuth: true }).post(
+          `/cv/${cvId}/upload-image`,
+          formData
+        );
+        this.currentResume.photo = response.data.photoUrl; // Update with the correct field from your API response
+        toast.success("Image uploaded successfully!");
+      } catch (error) {
+        toast.error("Image upload failed!");
+        console.error(error);
+      }
+    },
+    async removeImage() {
+      try {
+        const cvId = this.currentResume.id;
+        console.log("cvid", cvId);
+        await api({ requiresAuth: true }).delete(`/cv/${cvId}/image`);
+        toast.success("Image removed successfully!");
+      } catch (error) {
+        toast.error("Image removing failed!");
+        console.error(error);
       }
     },
   },

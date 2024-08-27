@@ -7,7 +7,10 @@
           v-if="resume.photo"
         >
           <div class="template-side__info-img">
-            <img :src="resume.photo" alt="User Photo" />
+            <img
+              :src="`http://localhost:3000${resume.photo}`"
+              alt="User Photo"
+            />
           </div>
         </div>
         <div

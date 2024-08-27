@@ -20,6 +20,9 @@ import { SkillModule } from './api/skill/skill.module';
 import { SocialModule } from './api/social/social.module';
 import { CvModule } from './api/cv/cv.module';
 import { TemplatesModule } from './api/templates/templates.module';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { MulterModule } from '@nestjs/platform-express'; // Use this for file uploads
+import { join } from 'path';
 
 @Module({
   imports: [
@@ -55,7 +58,13 @@ import { TemplatesModule } from './api/templates/templates.module';
     SkillModule,
     SocialModule,
     CvModule,
-    TemplatesModule
+    TemplatesModule,
+    ServeStaticModule.forRoot({
+      rootPath: join(process.cwd(), 'public'), // Serves files from 'public' at the root level
+    }),
+    MulterModule.register({
+      dest: join(process.cwd(), 'public', 'uploads'), // Saves files to 'public/uploads'
+    }),
   ],
   controllers: [AppController],
   providers: [

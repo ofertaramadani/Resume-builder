@@ -4,7 +4,6 @@ import {
   Param,
   NotFoundException,
   ClassSerializerInterceptor,
-  UseInterceptors,
   UsePipes,
   ValidationPipe,
   Body,
@@ -12,7 +11,15 @@ import {
   HttpStatus,
   Post,
   Put,
+  Delete,
+  UploadedFile,
+  UseInterceptors,
+  Res,
 } from '@nestjs/common';
+import { join } from 'path';
+import * as fs from 'fs';
+import { Response } from 'express';
+import { FileInterceptor } from '@nestjs/platform-express';
 import { CvService } from './cv.service';
 import { Cv } from './entities/cv.entity';
 import { GetCurrentUser } from 'src/common/decorators/get-current-user.decorator';
@@ -96,6 +103,66 @@ export class CvController {
       }
       // Handle other errors
       throw error;
+    }
+  }
+
+  @Delete('/:cvId')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async deleteUserCv(
+    @GetCurrentUser() user: User,
+    @Param('cvId') cvId: number,
+  ): Promise<void> {
+    try {
+      await this.cvService.deleteUserCv(user.id, cvId);
+    } catch (error) {
+      if (error instanceof NotFoundException) {
+        throw new NotFoundException(error.message);
+      }
+      throw error;
+    }
+  }
+
+  @Post('/:cvId/upload-image')
+  @UseInterceptors(FileInterceptor('photo'))
+  async uploadCvImage(
+    @Param('cvId') cvId: number,
+    @UploadedFile() file: Express.Multer.File,
+  ) {
+    return this.cvService.uploadCvImage(cvId, file);
+  }
+
+  @Get(':cvId/image')
+  async getImage(@Param('cvId') cvId: number, @Res() res: Response) {
+    try {
+      const fileName = await this.cvService.getImageFileName(cvId);
+      const filePath = join(process.cwd(), 'public', 'uploads', fileName);
+      console.log('ASksafjkasdjfklsdjfkladsjfkladsjflkadsjfkladsjf', filePath);
+      if (fs.existsSync(filePath)) {
+        console.log('filepath', filePath);
+        res.sendFile(filePath);
+      } else {
+        throw new NotFoundException('Image not found');
+      }
+    } catch (error) {
+      if (error instanceof NotFoundException) {
+        res.status(404).send(error.message);
+      } else {
+        res.status(500).send('Internal Server Error');
+      }
+    }
+  }
+
+  @Delete(':cvId/image')
+  async deleteImage(@GetCurrentUser() user: User, @Param('cvId') cvId: number) {
+    try {
+      await this.cvService.deleteImageFile(user.id, cvId);
+      return { message: 'Image deleted successfully' };
+    } catch (error) {
+      if (error instanceof NotFoundException) {
+        throw new NotFoundException('Image not found');
+      } else {
+        throw new Error('Internal Server Error');
+      }
     }
   }
 }

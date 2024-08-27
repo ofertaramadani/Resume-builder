@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  BadRequestException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from '../user/entities/user.entity';
@@ -9,9 +13,16 @@ import { Experience } from '../experience/entities/experience.entity';
 import { Skill } from '../skill/entities/skill.entity';
 import { Social } from '../social/entities/social.entity';
 import { UpdateCvDto } from './dtos/update-cv.dto';
+import * as fs from 'fs';
+import * as path from 'path';
+import { v4 as uuidv4 } from 'uuid';
+import { writeFileSync, existsSync, mkdirSync } from 'fs';
+import { join } from 'path';
 
 @Injectable()
 export class CvService {
+  private readonly uploadPath = join(process.cwd(), 'public', 'uploads');
+
   templateRepository: any;
   constructor(
     @InjectRepository(Cv)
@@ -26,7 +37,11 @@ export class CvService {
     private readonly skillRepository: Repository<Skill>,
     @InjectRepository(Social)
     private readonly socialRepository: Repository<Social>,
-  ) {}
+  ) {
+    if (!existsSync(this.uploadPath)) {
+      mkdirSync(this.uploadPath, { recursive: true });
+    }
+  }
 
   async getUserCvs(userId: number): Promise<Cv[]> {
     const user = await this.userRepository.findOne({ where: { id: userId } });
@@ -287,5 +302,95 @@ export class CvService {
     });
 
     return updatedCv;
+  }
+
+  async deleteUserCv(userId: number, cvId: number): Promise<void> {
+    const user = await this.userRepository.findOne({ where: { id: userId } });
+
+    if (!user) {
+      throw new NotFoundException(`User not found.`);
+    }
+
+    const cv = await this.cvRepository.findOne({
+      where: { id: cvId, user: { id: userId } },
+    });
+
+    if (!cv) {
+      throw new NotFoundException(`CV not found.`);
+    }
+
+    await this.cvRepository.remove(cv);
+  }
+
+  private async saveImageFile(imageData: string): Promise<string> {
+    const buffer = Buffer.from(imageData, 'base64');
+    const fileName = `${uuidv4()}.png`;
+    const filePath = path.join(this.uploadPath, fileName);
+
+    fs.writeFileSync(filePath, buffer);
+
+    return fileName;
+  }
+
+  async uploadCvImage(cvId: number, file: Express.Multer.File) {
+    const fileName = `${cvId}-${Date.now()}-${file.originalname}`;
+    const filePath = path.join(this.uploadPath, fileName);
+
+    try {
+      writeFileSync(filePath, file.buffer);
+      console.log(`File successfully saved to ${filePath}`);
+
+      await this.cvRepository.update(cvId, { photo: fileName });
+      return { photoUrl: `/uploads/${fileName}` };
+    } catch (error) {
+      console.error('Error saving file:', error);
+      throw new Error('File upload failed');
+    }
+  }
+
+  async getImageFileName(cvId: number): Promise<string> {
+    const cv = await this.cvRepository.findOne({ where: { id: cvId } });
+
+    if (!cv || !cv.photo) {
+      throw new NotFoundException('CV or image not found');
+    }
+
+    return cv.photo;
+  }
+
+  async deleteImageFile(userId: number, cvId: number): Promise<void> {
+    const upload_path = join(process.cwd(), 'public', 'uploads');
+    const user = await this.userRepository.findOne({ where: { id: userId } });
+
+    if (!user) {
+      throw new NotFoundException(`User not found.`);
+    }
+
+    const cv = await this.cvRepository.findOne({
+      where: { id: cvId, user: { id: userId } },
+    });
+    if (!cv || !cv.photo) {
+      throw new NotFoundException('Image not found');
+    }
+
+    const fileName = cv.photo;
+    const filePath = path.join(upload_path, fileName);
+
+    // Update the CV in the database
+    const updateResult = await this.cvRepository.update(cvId, { photo: null });
+    if (updateResult.affected === 0) {
+      throw new Error('Failed to update the CV photo path in the database.');
+    }
+
+    // Delete the image file from the file system
+    if (fs.existsSync(filePath)) {
+      try {
+        fs.unlinkSync(filePath);
+      } catch (error) {
+        throw new Error('Failed to delete the image file.');
+      }
+    } else {
+      throw new NotFoundException('Image not found on the file system');
+    }
   }
 }

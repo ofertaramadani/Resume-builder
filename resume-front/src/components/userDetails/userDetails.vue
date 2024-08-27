@@ -1,6 +1,6 @@
 <template>
   <div class="card">
-    <div class="img" @click="deleteResume">
+    <div class="img" @click.stop="openPopUp = !openPopUp">
       <img src="@/assets/icons/trash.svg" alt="" />
     </div>
     <div class="card-body">
@@ -10,12 +10,23 @@
       <p class="phone">{{ phone }}</p>
       <p class="location">{{ city }}, {{ country }}</p>
     </div>
+    <div class="card-fixed" v-if="openPopUp">
+      <h3>Are you sure you want to delete your resume?</h3>
+      <div class="card-btns">
+        <div class="btn btn-delete" @click.stop="deleteResume">Delete</div>
+        <div class="btn btn-cancel" @click.stop="openPopUp = !openPopUp">
+          Cancel
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
 <script setup>
-import { computed } from "vue";
+import { computed, ref } from "vue";
 
+// Define emits
+const emit = defineEmits(["deleteCv"]);
 const props = defineProps({
   data: {
     type: Object,
@@ -23,6 +34,7 @@ const props = defineProps({
   },
 });
 
+let openPopUp = ref(false);
 const fullName = computed(
   () => `${props.data.firstname} ${props.data.lastname}`
 );
@@ -31,9 +43,50 @@ const email = computed(() => props.data.email);
 const phone = computed(() => props.data.phone);
 const city = computed(() => props.data.city);
 const country = computed(() => props.data.country);
+
+function deleteResume() {
+  emit("deleteCv");
+}
 </script>
 
 <style scoped lang="scss">
+.card-fixed {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: white;
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  width: 400px;
+  text-align: center;
+  z-index: 9999;
+}
+
+.card-btns {
+  margin-top: 20px;
+  display: flex;
+  justify-content: space-around;
+  gap: 50px;
+  .btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    border: none;
+    &:hover {
+      color: unset;
+    }
+    &-delete {
+      background: #e23636;
+    }
+    &-cancel {
+      background-color: #82dd55;
+    }
+  }
+}
+
 .card {
   margin: 0 auto;
   background-color: white;
