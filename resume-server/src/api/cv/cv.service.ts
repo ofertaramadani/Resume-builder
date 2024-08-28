@@ -303,33 +303,22 @@ export class CvService {
 
     return updatedCv;
   }
-
   async deleteUserCv(userId: number, cvId: number): Promise<void> {
-    const user = await this.userRepository.findOne({ where: { id: userId } });
-
-    if (!user) {
-      throw new NotFoundException(`User not found.`);
-    }
-
     const cv = await this.cvRepository.findOne({
       where: { id: cvId, user: { id: userId } },
+      relations: ['experiences', 'educations', 'socials', 'skills'],
     });
 
     if (!cv) {
-      throw new NotFoundException(`CV not found.`);
+      throw new NotFoundException('CV not found.');
     }
 
-    await this.cvRepository.remove(cv);
-  }
+    await this.educationRepository.delete({ cv: { id: cvId } });
+    await this.experienceRepository.delete({ cv: { id: cvId } });
+    await this.skillRepository.delete({ cv: { id: cvId } });
+    await this.socialRepository.delete({ cv: { id: cvId } });
 
-  private async saveImageFile(imageData: string): Promise<string> {
-    const buffer = Buffer.from(imageData, 'base64');
-    const fileName = `${uuidv4()}.png`;
-    const filePath = path.join(this.uploadPath, fileName);
-
-    fs.writeFileSync(filePath, buffer);
-
-    return fileName;
+    await this.cvRepository.delete(cvId);
   }
 
   async uploadCvImage(cvId: number, file: Express.Multer.File) {
@@ -338,10 +327,8 @@ export class CvService {
 
     try {
       writeFileSync(filePath, file.buffer);
-      console.log(`File successfully saved to ${filePath}`);
-
       await this.cvRepository.update(cvId, { photo: fileName });
-      return { photoUrl: `/uploads/${fileName}` };
+      return { photoUrl: `/${fileName}` };
     } catch (error) {
       console.error('Error saving file:', error);
       throw new Error('File upload failed');
@@ -369,6 +356,7 @@ export class CvService {
     const cv = await this.cvRepository.findOne({
       where: { id: cvId, user: { id: userId } },
     });
+
     if (!cv || !cv.photo) {
       throw new NotFoundException('Image not found');
     }
@@ -378,11 +366,11 @@ export class CvService {
 
     // Update the CV in the database
     const updateResult = await this.cvRepository.update(cvId, { photo: null });
+
     if (updateResult.affected === 0) {
       throw new Error('Failed to update the CV photo path in the database.');
     }
 
-    // Delete the image file from the file system
     if (fs.existsSync(filePath)) {
       try {
         fs.unlinkSync(filePath);

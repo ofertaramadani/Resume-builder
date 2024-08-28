@@ -2,8 +2,13 @@
   <div class="template_5 modern-cv-template">
     <header :style="{ backgroundColor: localTemplateColor }">
       <div class="header-content">
-        <div class="header-photo" v-if="resume.photo">
-          <img :src="resume.photo" alt="User Photo" />
+        <div class="header-photo" v-if="photoUrl || resume.photo">
+          <img v-if="photoUrl" :src="photoUrl" alt="Image Preview" />
+          <img
+            v-else-if="resume.photo"
+            :src="`http://localhost:3000/uploads/${resume.photo}`"
+            alt="User Photo"
+          />
         </div>
         <div class="header-info">
           <h1>{{ resume.firstname }} {{ resume.lastname }}</h1>
@@ -124,9 +129,10 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref, watch } from "vue";
 
-const props = defineProps(["resumeDetails"]);
+const props = defineProps({ resumeDetails: Object, photo: Object });
+
 const resume = ref(props.resumeDetails.currentResume);
 const educations = ref(resume.value.educations);
 const experiences = ref(resume.value.experiences);
@@ -134,6 +140,23 @@ const skills = ref(resume.value.skills);
 const socials = ref(resume.value.socials);
 const newEducation = ref(props.resumeDetails.newEducation);
 const newExperience = ref(props.resumeDetails.newExperience);
+
+const photoUrl = ref(null);
+
+watch(
+  () => props.photo,
+  (newFile) => {
+    if (newFile) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        photoUrl.value = e.target.result;
+      };
+      reader.readAsDataURL(newFile);
+    } else {
+      photoUrl.value = null;
+    }
+  }
+);
 
 function isObjectEmpty(obj) {
   return Object.values(obj).every((value) => {

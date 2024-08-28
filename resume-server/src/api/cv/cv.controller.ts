@@ -136,9 +136,7 @@ export class CvController {
     try {
       const fileName = await this.cvService.getImageFileName(cvId);
       const filePath = join(process.cwd(), 'public', 'uploads', fileName);
-      console.log('ASksafjkasdjfklsdjfkladsjfkladsjflkadsjfkladsjf', filePath);
       if (fs.existsSync(filePath)) {
-        console.log('filepath', filePath);
         res.sendFile(filePath);
       } else {
         throw new NotFoundException('Image not found');

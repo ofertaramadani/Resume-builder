@@ -19,7 +19,10 @@
             "
           />
         </div>
-        <personalDetails v-show="openTabs['personal']" />
+        <personalDetails
+          v-show="openTabs['personal']"
+          @file-changed="imageIsSelected"
+        />
       </div>
       <div class="break"></div>
       <div class="create-resume__field">
@@ -133,11 +136,19 @@
         ref="html2Pdf"
       >
         <template v-slot:pdf-content>
-          <component :is="chosenTemplate" :resumeDetails="resume" />
+          <component
+            :is="chosenTemplate"
+            :resumeDetails="resume"
+            :photo="photo"
+          />
         </template>
       </vue3-html2pdf>
       <div class="create-resume__template-wrap">
-        <component :is="chosenTemplate" :resumeDetails="resume" />
+        <component
+          :is="chosenTemplate"
+          :resumeDetails="resume"
+          :photo="photo"
+        />
       </div>
       <div class="save-icons" v-if="resume.validateFields()">
         <img
@@ -153,7 +164,7 @@
         </span>
       </div>
       <div class="create-resume__template-btn white" v-else>
-        Fill the required (*) fields, to download save the resume
+        Fill the required (*) fields, to download and save the resume
       </div>
     </div>
   </div>
@@ -182,6 +193,7 @@ let chosenTemplate = ref("");
 let resumeFinished = ref(false);
 let notSaved = ref(true);
 let generateFromRouterLeave = ref(false);
+let photo = ref(null);
 const openTabs = reactive({
   personal: true,
   summary: false,
@@ -206,6 +218,12 @@ function openTab(tabName) {
 const goBack = () => {
   router.back();
   resume.resumeToBeUpdated = null;
+};
+
+const imageIsSelected = (file) => {
+  if (file) {
+    photo.value = file;
+  }
 };
 
 const html2Pdf = ref(null);

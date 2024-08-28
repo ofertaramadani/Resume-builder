@@ -7,6 +7,7 @@ export const useResumeStore = defineStore("resume", {
   state: () => ({
     resumes: [],
     resumeToBeUpdated: null,
+    imageToBeUploaded: null,
     dummyObject: {
       photo: "https://via.placeholder.com/150",
       email: "example@example.com",
@@ -113,8 +114,6 @@ export const useResumeStore = defineStore("resume", {
       );
 
       const data = await response.json();
-
-      console.log("AAIIIIIII", data);
       // const skills = extractSkillsFromResponse(data);
       return data;
     },
@@ -122,7 +121,9 @@ export const useResumeStore = defineStore("resume", {
       try {
         this.addEducation();
         this.addExperience();
-        await api({ requiresAuth: true }).post("/cv", resume);
+        let res = await api({ requiresAuth: true }).post("/cv", resume);
+        this.currentResume.id = res.data.id;
+        await this.uploadImage();
         toast.success("Resume created successfully!");
       } catch (error) {
         toast.error("Could not create resume, try again!");
@@ -133,11 +134,10 @@ export const useResumeStore = defineStore("resume", {
       try {
         this.addEducation();
         this.addExperience();
+        this.uploadImage();
         const cvId = this.currentResume.id;
         await api({ requiresAuth: true }).put(`/cv/${cvId}`, resume);
-        toast.success("Resume updated successfully!");
       } catch (error) {
-        toast.error("Could not update resume!");
         console.error(error);
       }
     },
@@ -264,21 +264,22 @@ export const useResumeStore = defineStore("resume", {
         this.currentResume.city &&
         this.currentResume.professionalSummary
       ) {
-        console.log("urjok", this.currentResume);
         return true;
       }
     },
-    async uploadImage(file) {
-      const cvId = this.currentResume.id;
+    addImageToCv(file) {
       const formData = new FormData();
       formData.append("photo", file);
-
+      this.imageToBeUploaded = formData;
+    },
+    async uploadImage() {
       try {
+        const cvId = this.currentResume.id;
         const response = await api({ requiresAuth: true }).post(
           `/cv/${cvId}/upload-image`,
-          formData
+          this.imageToBeUploaded
         );
-        this.currentResume.photo = response.data.photoUrl; // Update with the correct field from your API response
+        this.currentResume.photo = response.data.photoUrl;
         toast.success("Image uploaded successfully!");
       } catch (error) {
         toast.error("Image upload failed!");
@@ -288,8 +289,8 @@ export const useResumeStore = defineStore("resume", {
     async removeImage() {
       try {
         const cvId = this.currentResume.id;
-        console.log("cvid", cvId);
         await api({ requiresAuth: true }).delete(`/cv/${cvId}/image`);
+        this.currentResume.photo = null;
         toast.success("Image removed successfully!");
       } catch (error) {
         toast.error("Image removing failed!");

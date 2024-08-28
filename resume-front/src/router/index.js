@@ -25,6 +25,7 @@ const routes = [
     path: "/dashboard",
     name: "dashboardPage",
     component: dashboardPage,
+    meta: { requiresRefresh: true },
   },
   {
     path: "/resume/:resumeId",
@@ -48,6 +49,9 @@ router.beforeEach((to, from, next) => {
     (to.name === "loginPage" || to.name === "signupPage")
   ) {
     next(from);
+  } else if (from.name == "createResumePage" && to.name == "dashboardPage") {
+    next();
+    location.reload();
   } else {
     next();
   }

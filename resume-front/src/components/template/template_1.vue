@@ -4,11 +4,18 @@
       <div class="template-side__personal">
         <div
           class="template-side__info template-side__info-profile"
-          v-if="resume.photo"
+          v-if="photoUrl || resume.photo"
         >
           <div class="template-side__info-img">
             <img
-              :src="`http://localhost:3000${resume.photo}`"
+              v-if="photoUrl"
+              :src="photoUrl"
+              alt="Image Preview"
+              style="max-width: 300px; max-height: 300px"
+            />
+            <img
+              v-else-if="resume.photo"
+              :src="`http://localhost:3000/uploads/${resume.photo}`"
               alt="User Photo"
             />
           </div>
@@ -168,9 +175,9 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref, watch } from "vue";
 
-const props = defineProps(["resumeDetails"]);
+const props = defineProps({ resumeDetails: Object, photo: Object });
 const resume = ref(props.resumeDetails.currentResume);
 const educations = ref(resume.value.educations);
 const experiences = ref(resume.value.experiences);
@@ -178,6 +185,23 @@ const skills = ref(resume.value.skills);
 const socials = ref(resume.value.socials);
 const newEducation = ref(props.resumeDetails.newEducation);
 const newExperience = ref(props.resumeDetails.newExperience);
+
+const photoUrl = ref(null);
+
+watch(
+  () => props.photo,
+  (newFile) => {
+    if (newFile) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        photoUrl.value = e.target.result;
+      };
+      reader.readAsDataURL(newFile);
+    } else {
+      photoUrl.value = null;
+    }
+  }
+);
 
 const isObjectEmpty = (obj) => {
   return Object.keys(obj).every((key) => obj[key] === "");
