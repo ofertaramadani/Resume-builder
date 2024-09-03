@@ -15,13 +15,15 @@ import { Social } from '../social/entities/social.entity';
 import { UpdateCvDto } from './dtos/update-cv.dto';
 import * as fs from 'fs';
 import * as path from 'path';
-import { v4 as uuidv4 } from 'uuid';
+import axios from 'axios';
 import { writeFileSync, existsSync, mkdirSync } from 'fs';
 import { join } from 'path';
 
 @Injectable()
 export class CvService {
   private readonly uploadPath = join(process.cwd(), 'public', 'uploads');
+  private readonly edenAiApiKey =
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNzA4ODBjZGYtZjFhZC00MjFmLWFhZjktNDQ5YzY3YzlkYWY4IiwidHlwZSI6ImFwaV90b2tlbiJ9.r_ZwJ3Fy_s6nL06JKFpb4NUoujhcTKzC1xeOmu79i_Y';
 
   templateRepository: any;
   constructor(
@@ -379,6 +381,37 @@ export class CvService {
       }
     } else {
       throw new NotFoundException('Image not found on the file system');
+    }
+  }
+  async suggestSkills(profession: string): Promise<string[]> {
+    try {
+      const response = await axios.post(
+        'https://api.edenai.run/v2/text/generation',
+        {
+          data: {
+            providers: 'openai/gpt-4o-mini',
+            text: `Suggest some short skills, array looking wise, for the profession ${profession}`,
+            chatbot_global_action: 'Act as an assistant',
+            previous_history: [],
+            temperature: 0.0,
+            max_tokens: 50,
+          },
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${this.edenAiApiKey}`,
+            'Content-Type': 'application/json',
+          },
+        },
+      );
+
+      console.log('Respo Data', response);
+
+      // Assuming the response data contains an array of strings
+      return response.data; // Adjust according to the actual structure
+    } catch (error) {
+      console.error('Error fetching skills:', error);
+      return [];
     }
   }
 }

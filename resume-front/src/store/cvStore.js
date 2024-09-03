@@ -94,29 +94,6 @@ export const useResumeStore = defineStore("resume", {
   }),
 
   actions: {
-    async getSkillsBasedOnProfession() {
-      const jobDescription =
-        "nice very programmer vue js react web development"; // Retrieve a job description based on the profession
-
-      const response = await fetch(
-        "https://api.edenai.run/v1/pretrained/nlp/keyword_extraction",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer YeyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNzA4ODBjZGYtZjFhZC00MjFmLWFhZjktNDQ5YzY3YzlkYWY4IiwidHlwZSI6ImFwaV90b2tlbiJ9.r_ZwJ3Fy_s6nL06JKFpb4NUoujhcTKzC1xeOmu79i_Y`, // Replace with your API key
-          },
-          body: JSON.stringify({
-            text: jobDescription,
-            language: "en", // Language of the text
-          }),
-        }
-      );
-
-      const data = await response.json();
-      // const skills = extractSkillsFromResponse(data);
-      return data;
-    },
     async createResume(resume) {
       try {
         this.addEducation();
@@ -280,9 +257,7 @@ export const useResumeStore = defineStore("resume", {
           this.imageToBeUploaded
         );
         this.currentResume.photo = response.data.photoUrl;
-        toast.success("Image uploaded successfully!");
       } catch (error) {
-        toast.error("Image upload failed!");
         console.error(error);
       }
     },
@@ -294,6 +269,16 @@ export const useResumeStore = defineStore("resume", {
         toast.success("Image removed successfully!");
       } catch (error) {
         toast.error("Image removing failed!");
+        console.error(error);
+      }
+    },
+    async suggest() {
+      try {
+        let res = await api({ requiresAuth: true }).post(`/cv/suggest`, {
+          profession: "Programmer",
+        });
+        console.log("suggested skills", res);
+      } catch (error) {
         console.error(error);
       }
     },

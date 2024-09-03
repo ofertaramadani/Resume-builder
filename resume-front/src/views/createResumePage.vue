@@ -263,7 +263,6 @@ onMounted(async () => {
       await resume.getResume(updateCvId.value);
       professionalSummary.value = resume.currentResume.professionalSummary;
     }
-    resume.getSkillsBasedOnProfession();
   } catch (e) {
     console.error("e", e);
   } finally {

@@ -163,4 +163,9 @@ export class CvController {
       }
     }
   }
+
+  @Post('suggest')
+  async suggestSkills(@Body('profession') profession: string) {
+    return this.cvService.suggestSkills(profession);
+  }
 }

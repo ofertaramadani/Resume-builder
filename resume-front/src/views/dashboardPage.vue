@@ -3,7 +3,7 @@
     <div class="dashboard__wrapper">
       <div class="menu">
         <div class="menu__logo">
-          <router-link to="/">resume.</router-link>
+          <router-link to="/">resumeBox.</router-link>
         </div>
         <div class="menu__items">
           <div class="menu__items-second">
@@ -131,7 +131,6 @@ onMounted(async () => {
   try {
     loading.value = true;
     isDashboardVisible.value = true;
-
     resumeStore.resumeToBeUpdated = null;
     await resumeStore.getResumes();
     await templateStore.getTemplates();

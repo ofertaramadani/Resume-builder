@@ -4,11 +4,11 @@
       <img src="@/assets/icons/trash.svg" alt="" />
     </div>
     <div class="card-body">
-      <h2 class="full-name">{{ fullName }}</h2>
-      <p class="title">{{ title }}</p>
-      <p class="email">{{ email }}</p>
-      <p class="phone">{{ phone }}</p>
-      <p class="location">{{ city }}, {{ country }}</p>
+      <h2 class="full-name" v-if="fullName">{{ fullName }}</h2>
+      <p class="title" v-if="title">{{ title }}</p>
+      <p class="email" v-if="email">{{ email }}</p>
+      <p class="phone" v-if="phone">{{ phone }}</p>
+      <p class="location" v-if="city">{{ city }}<span v-if="city && country">,</span> {{ country }}</p>
     </div>
     <div class="card-fixed" v-if="openPopUp">
       <h3>Are you sure you want to delete your resume?</h3>

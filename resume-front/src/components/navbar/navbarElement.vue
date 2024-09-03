@@ -3,7 +3,7 @@
     <div class="container">
       <div class="header__wrapper">
         <router-link to="/" class="routerLink"
-          ><h4 class="header__logo">resume.</h4></router-link
+          ><h4 class="header__logo">resumeBox.</h4></router-link
         >
         <div class="header__links">
           <nav class="header__nav" v-if="!isLogged">
