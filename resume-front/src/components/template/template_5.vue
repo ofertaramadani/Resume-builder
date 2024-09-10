@@ -36,7 +36,10 @@
         <p>{{ resume.professionalSummary }}</p>
       </section>
       <div class="main-content">
-        <section class="section-education" v-if="educations.length">
+        <section
+          class="section-education"
+          v-if="educations.length || !isObjectEmpty(newEducation)"
+        >
           <h3>Education</h3>
           <div class="education-list">
             <div
@@ -70,7 +73,10 @@
             </div>
           </div>
         </section>
-        <section class="section-experience" v-if="experiences.length">
+        <section
+          class="section-experience"
+          v-if="experiences.length || !isObjectEmpty(newExperience)"
+        >
           <h3>Experience</h3>
           <div class="experience-list">
             <div

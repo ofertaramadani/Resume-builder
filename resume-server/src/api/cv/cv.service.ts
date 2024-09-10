@@ -99,53 +99,50 @@ export class CvService {
     if (!user) {
       throw new NotFoundException(`User with ID ${userId} not found.`);
     }
+
     const newCv = this.cvRepository.create(cvDto);
     const createdCv = await this.cvRepository.save(newCv);
 
-    if (cvDto.educations) {
-      const educationEntities = cvDto.educations.map((eduDto) => {
-        return this.educationRepository.create({
-          ...eduDto,
-          cv: createdCv,
-        });
-      });
+    const entitiesToSave: Array<any> = [];
 
-      await this.educationRepository.save(educationEntities);
+    const mapAndPushEntities = <T>(
+      entitiesDto: T[] | undefined,
+      repository: {
+        create: (dto: T) => any;
+      },
+    ) => {
+      if (entitiesDto) {
+        const entities = entitiesDto.map((dto) =>
+          repository.create({ ...dto, cv: createdCv }),
+        );
+        entitiesToSave.push(...entities);
+      }
+    };
+
+    mapAndPushEntities(cvDto.educations, this.educationRepository);
+    mapAndPushEntities(cvDto.experiences, this.experienceRepository);
+    mapAndPushEntities(cvDto.skills, this.skillRepository);
+    mapAndPushEntities(cvDto.socials, this.socialRepository);
+
+    if (entitiesToSave.length > 0) {
+      // Save all entities at once
+      await Promise.all([
+        this.educationRepository.save(
+          entitiesToSave.filter((e) => e instanceof Education),
+        ),
+        this.experienceRepository.save(
+          entitiesToSave.filter((e) => e instanceof Experience),
+        ),
+        this.skillRepository.save(
+          entitiesToSave.filter((e) => e instanceof Skill),
+        ),
+        this.socialRepository.save(
+          entitiesToSave.filter((e) => e instanceof Social),
+        ),
+      ]);
     }
 
-    if (cvDto.experiences) {
-      const experienceEntities = cvDto.experiences.map((expDto) => {
-        return this.experienceRepository.create({
-          ...expDto,
-          cv: createdCv,
-        });
-      });
-
-      await this.experienceRepository.save(experienceEntities);
-    }
-
-    if (cvDto.skills) {
-      const skillEntities = cvDto.skills.map((skillDto) => {
-        return this.skillRepository.create({
-          ...skillDto,
-          cv: createdCv,
-        });
-      });
-
-      await this.skillRepository.save(skillEntities);
-    }
-
-    if (cvDto.socials) {
-      const socialEntities = cvDto.socials.map((socialDto) => {
-        return this.socialRepository.create({
-          ...socialDto,
-          cv: createdCv,
-        });
-      });
-      await this.socialRepository.save(socialEntities);
-    }
-
-    if (cvDto.templates) {
+    if (cvDto.templateUuid) {
       const template = await this.templateRepository.findOne({
         where: { id: cvDto.templateUuid },
       });
@@ -251,41 +248,59 @@ export class CvService {
       }
     }
 
+    // Update socials
     if (updateCvDto.socials) {
-      try {
-        const socials = updateCvDto.socials;
-        for (const social of socials) {
-          if (social.id) {
-            await this.socialRepository.update(social.id, social);
-          } else {
-            const newSocial = this.socialRepository.create({
-              ...social,
-              cv_id: cvId,
-            });
-            await this.socialRepository.save(newSocial);
-          }
+      const socials = updateCvDto.socials;
+      let previousSocials = await this.socialRepository.find({
+        where: { cv: { id: cvId } },
+      });
+
+      // Remove socials not in the updated list
+      for (const existingSocial of previousSocials) {
+        if (!socials.some((social) => social.id === existingSocial.id)) {
+          await this.socialRepository.remove(existingSocial);
         }
-      } catch (error) {
-        throw error;
+      }
+
+      // Update or add new socials
+      for (const social of socials) {
+        if (social.id) {
+          await this.socialRepository.update(social.id, social);
+        } else {
+          const newSocial = this.socialRepository.create({
+            ...social,
+            cv_id: cvId,
+          });
+          await this.socialRepository.save(newSocial);
+        }
       }
     }
 
+    // Update skills
     if (updateCvDto.skills) {
-      try {
-        const skills = updateCvDto.skills;
-        for (const skill of skills) {
-          if (skill.id) {
-            await this.skillRepository.update(skill.id, skill);
-          } else {
-            const newSkill = this.skillRepository.create({
-              ...skill,
-              cv_id: cvId,
-            });
-            await this.skillRepository.save(newSkill);
-          }
+      const skills = updateCvDto.skills;
+      let previousSkills = await this.skillRepository.find({
+        where: { cv: { id: cvId } },
+      });
+
+      // Remove skills not in the updated list
+      for (const existingSkill of previousSkills) {
+        if (!skills.some((skill) => skill.id === existingSkill.id)) {
+          await this.skillRepository.remove(existingSkill);
         }
-      } catch (error) {
-        throw error;
+      }
+
+      // Update or add new skills
+      for (const skill of skills) {
+        if (skill.id) {
+          await this.skillRepository.update(skill.id, skill);
+        } else {
+          const newSkill = this.skillRepository.create({
+            ...skill,
+            cv_id: cvId,
+          });
+          await this.skillRepository.save(newSkill);
+        }
       }
     }
 

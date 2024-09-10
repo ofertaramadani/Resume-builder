@@ -40,7 +40,7 @@ const addSocial = () => {
   }
 };
 const removeSocial = (social, index) => {
-  resumeStore.removeSocial(social);
+  resumeStore.removeSocial(social.name);
   links.splice(index, 1);
 };
 

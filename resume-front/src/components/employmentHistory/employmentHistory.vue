@@ -95,7 +95,6 @@ function openEdu(index) {
 
 const addNewExperience = () => {
   resumeStore.addExperience();
-  newExperience = {};
 };
 onBeforeMount(() => {
   newExperience = resumeStore.newExperience;

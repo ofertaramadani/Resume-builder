@@ -27,8 +27,8 @@ export const useResumeStore = defineStore("resume", {
       skills: [{ name: "JavaScript" }, { name: "Vue.js" }, { name: "Node.js" }],
       educations: [
         {
-          start: "2015",
-          end: "2019",
+          start: "2015-07-06",
+          end: "2019-07-06",
           school: "University of Sample",
           place: "Sample City",
           title: "Bachelor of Science in Computer Science",
@@ -38,8 +38,8 @@ export const useResumeStore = defineStore("resume", {
       ],
       experiences: [
         {
-          start: "2020",
-          end: "2022",
+          start: "2020-08-08",
+          end: "2022-09-08",
           employer: "Tech Corp",
           place: "Sample City",
           title: "Frontend Developer",
@@ -47,8 +47,8 @@ export const useResumeStore = defineStore("resume", {
             "Developed user interfaces using Vue.js and maintained application performance.",
         },
         {
-          start: "2022",
-          end: "2023",
+          start: "2022-08-08",
+          end: "2023-09-09",
           employer: "Tech Corp",
           place: "Sample City",
           title: "Frontend Developer",
@@ -109,6 +109,7 @@ export const useResumeStore = defineStore("resume", {
     },
     async updateResume(resume) {
       try {
+        console.log("resume before uodate", resume);
         this.addEducation();
         this.addExperience();
         this.uploadImage();
@@ -167,12 +168,12 @@ export const useResumeStore = defineStore("resume", {
     },
     removeSkill(skill) {
       this.currentResume.skills = this.currentResume.skills.filter((sk) => {
-        return sk.name !== skill.name;
+        return sk.name !== skill;
       });
     },
     removeSocial(social) {
       this.currentResume.socials = this.currentResume.socials.filter((sc) => {
-        return sc.name !== social.name;
+        return sc.name !== social;
       });
     },
     addEducation() {
@@ -181,19 +182,17 @@ export const useResumeStore = defineStore("resume", {
       );
 
       if (hasNonEmptyValue) {
-        this.currentResume.educations.push(this.newEducation);
+        this.currentResume.educations.push({ ...this.newEducation });
         this.setDefaultEducation();
       }
     },
     setDefaultEducation() {
-      this.newEducation = {
-        title: "",
-        school: "",
-        place: "",
-        start: "",
-        end: "",
-        description: "",
-      };
+      this.newEducation.title = "";
+      this.newEducation.school = "";
+      this.newEducation.place = "";
+      this.newEducation.start = "";
+      this.newEducation.end = "";
+      this.newEducation.description = "";
     },
     addExperience() {
       const hasNonEmptyValue = Object.values(this.newExperience).some(
@@ -201,19 +200,17 @@ export const useResumeStore = defineStore("resume", {
       );
 
       if (hasNonEmptyValue) {
-        this.currentResume.experiences.push(this.newExperience);
+        this.currentResume.experiences.push({ ...this.newExperience });
         this.setDefaultExperience();
       }
     },
     setDefaultExperience() {
-      this.newExperience = {
-        title: "",
-        employer: "",
-        place: "",
-        start: "",
-        end: "",
-        description: "",
-      };
+      this.newExperience.title = "";
+      this.newExperience.employer = "";
+      this.newExperience.place = "";
+      this.newExperience.start = "";
+      this.newExperience.end = "";
+      this.newExperience.description = "";
     },
     addSkill(skill) {
       this.currentResume.skills.push(skill);

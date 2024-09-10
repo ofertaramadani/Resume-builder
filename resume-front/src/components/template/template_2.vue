@@ -30,7 +30,7 @@
               {{ resume.phone }}
             </li>
             <li v-if="resume.country || resume.city">
-              {{ resume.country }}, {{ resume.city }}
+              {{ resume.country }} {{ resume.city }}
             </li>
           </ul>
         </div>
@@ -72,7 +72,9 @@
               class="education-item"
             >
               <h4 v-if="education.start">
-                {{ education.start }} - {{ education.end }}
+                {{ education.start }}
+                <span v-if="education.start && education.end">-</span>
+                {{ education.end }}
               </h4>
               <h5>
                 {{ education.school
@@ -84,7 +86,9 @@
             </div>
             <div class="education-item" v-if="!isObjectEmpty(newEducation)">
               <h4 v-if="newEducation.start">
-                {{ newEducation.start }} - {{ newEducation.end }}
+                {{ newEducation.start }}
+                <span v-if="newEducation.start && newEducation.end">-</span>
+                {{ newEducation.end }}
               </h4>
               <h5>
                 {{ newEducation.school
@@ -113,7 +117,9 @@
               class="experience-item"
             >
               <h4 v-if="experience.start">
-                {{ experience.start }} - {{ experience.end }}
+                {{ experience.start }}
+                <span v-if="experience.start && experience.end">-</span>
+                {{ experience.end }}
               </h4>
               <h5>
                 {{ experience.employer
@@ -126,7 +132,9 @@
           </div>
           <div class="experience-item" v-if="!isObjectEmpty(newExperience)">
             <h4 v-if="newExperience.start">
-              {{ newExperience.start }} - {{ newExperience.end }}
+              {{ newExperience.start }}
+              <span v-if="newExperience.start && newExperience.end">-</span>
+              {{ newExperience.end }}
             </h4>
             <h5>
               {{ newExperience.employer
@@ -227,7 +235,7 @@ const isArrayEmpty = (array) => {
     display: flex;
     padding: 20px;
     .sidebar {
-      width: 30%;
+      width: 40%;
       padding-right: 20px;
       border-right: 1px solid #ccc;
       .section {

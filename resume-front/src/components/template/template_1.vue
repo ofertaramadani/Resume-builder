@@ -175,7 +175,7 @@
 </template>
 
 <script setup>
-import { ref, watch } from "vue";
+import { reactive, ref, watch } from "vue";
 
 const props = defineProps({ resumeDetails: Object, photo: Object });
 const resume = ref(props.resumeDetails.currentResume);
@@ -183,8 +183,8 @@ const educations = ref(resume.value.educations);
 const experiences = ref(resume.value.experiences);
 const skills = ref(resume.value.skills);
 const socials = ref(resume.value.socials);
-const newEducation = ref(props.resumeDetails.newEducation);
-const newExperience = ref(props.resumeDetails.newExperience);
+const newEducation = reactive(props.resumeDetails.newEducation);
+const newExperience = reactive(props.resumeDetails.newExperience);
 
 const photoUrl = ref(null);
 

@@ -75,10 +75,8 @@ export class CvController {
       return createdCv;
     } catch (error) {
       if (error instanceof NotFoundException) {
-        // Handle NotFoundException
         throw new NotFoundException(error.message);
       }
-      // Handle other errors
       throw error;
     }
   }
@@ -98,10 +96,8 @@ export class CvController {
       return updatedCv;
     } catch (error) {
       if (error instanceof NotFoundException) {
-        // Handle NotFoundExceptions
         throw new NotFoundException(error.message);
       }
-      // Handle other errors
       throw error;
     }
   }
@@ -162,10 +158,5 @@ export class CvController {
         throw new Error('Internal Server Error');
       }
     }
-  }
-
-  @Post('suggest')
-  async suggestSkills(@Body('profession') profession: string) {
-    return this.cvService.suggestSkills(profession);
   }
 }

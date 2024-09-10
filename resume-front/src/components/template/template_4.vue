@@ -1,6 +1,7 @@
 <template>
   <div class="template_4 fancy-cv-template">
     <header>
+      {{ newEducation }}
       <div class="header-content">
         <div class="header-photo" v-if="photoUrl || resume.photo">
           <img v-if="photoUrl" :src="photoUrl" alt="Image Preview" />
@@ -37,7 +38,10 @@
         <h3>Professional Summary</h3>
         <p>{{ resume.professionalSummary }}</p>
       </section>
-      <section class="section-education" v-if="educations.length">
+      <section
+        class="section-education"
+        v-if="educations.length || !isObjectEmpty(newEducation)"
+      >
         <h3>Education</h3>
         <div class="education-list">
           <div
@@ -70,7 +74,10 @@
           </div>
         </div>
       </section>
-      <section class="section-experience" v-if="experiences.length">
+      <section
+        class="section-experience"
+        v-if="experiences.length || !isObjectEmpty(newExperience)"
+      >
         <h3>Experience</h3>
         <div class="experience-list">
           <div
@@ -154,11 +161,9 @@ watch(
   }
 );
 
-function isObjectEmpty(obj) {
-  return Object.values(obj).every((value) => {
-    return value === "" || value === null || value === undefined;
-  });
-}
+const isObjectEmpty = (obj) => {
+  return Object.keys(obj).every((key) => obj[key] === "");
+};
 </script>
 
 <style lang="scss" scoped>

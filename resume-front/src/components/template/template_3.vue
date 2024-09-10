@@ -171,7 +171,7 @@ const isArrayEmpty = (array) => {
 </script>
 
 <style lang="scss" scoped>
-.cv-template {
+.template_3 {
   overflow: scroll;
   font-family: "Poppins";
   width: 210mm;
@@ -185,22 +185,22 @@ const isArrayEmpty = (array) => {
     display: flex;
     justify-content: space-between;
     padding-bottom: 20px;
+    &__photo {
+      width: 150px;
+      height: 150px;
+      margin-right: 20px;
+      border-radius: 50%;
+      & img {
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        object-fit: cover;
+      }
+    }
     &__left {
       display: flex;
       align-items: center;
       gap: 10px;
-      &__photo {
-        width: 50px;
-        height: 50px;
-        margin-right: 20px;
-        border-radius: 50%;
-        & img {
-          width: 100%;
-          height: 100%;
-          border-radius: 50%;
-          object-fit: cover;
-        }
-      }
     }
     &__info {
       & h1 {

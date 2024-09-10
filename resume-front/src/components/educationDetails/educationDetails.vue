@@ -95,7 +95,6 @@ function openEdu(index) {
 
 const addNewEducation = () => {
   resumeStore.addEducation();
-  newEducation = {};
 };
 onBeforeMount(() => {
   newEducation = resumeStore.newEducation;

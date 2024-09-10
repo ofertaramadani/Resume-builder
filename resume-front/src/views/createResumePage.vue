@@ -127,10 +127,9 @@
         :show-layout="false"
         :float-layout="true"
         :enable-download="true"
-        filename="hee hee"
+        filename="Resume"
         :pdf-quality="2"
         :manual-pagination="false"
-        :paginate-elements-by-height="1400"
         pdf-format="a4"
         @hasGenerated="hasGenerated($event)"
         ref="html2Pdf"
@@ -227,6 +226,7 @@ const imageIsSelected = (file) => {
 };
 
 const html2Pdf = ref(null);
+
 async function generatePDF() {
   try {
     resume.currentResume.uuid
@@ -247,8 +247,10 @@ async function generatePDF() {
 onBeforeRouteLeave(async (to, from, next) => {
   if (resumeFinished.value === false) {
     generateFromRouterLeave.value = true;
+    notSaved.value = false;
     await generatePDF();
   }
+  notSaved.value = true;
   resume.resumeToBeUpdated = null;
   next(); // Ensure to call next() to proceed with navigation
 });
