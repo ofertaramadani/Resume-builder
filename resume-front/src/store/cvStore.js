@@ -104,12 +104,11 @@ export const useResumeStore = defineStore("resume", {
         toast.success("Resume created successfully!");
       } catch (error) {
         toast.error("Could not create resume, try again!");
-        console.error("Errorj", error);
+        console.error("Error", error);
       }
     },
     async updateResume(resume) {
       try {
-        console.log("resume before uodate", resume);
         this.addEducation();
         this.addExperience();
         this.uploadImage();

@@ -27,3 +27,4 @@ export default ({ requiresAuth }) => {
 
   return axiosInstance;
 };
+

@@ -3,9 +3,9 @@
     <div class="skills__default">
       <div
         class="skills__skill"
-        v-for="(skill, index) in skillList"
+        v-for="(skill, index) in resumeStore.currentResume.skills"
         :key="index"
-        @click="removeSkill(skill, index)"
+        @click="removeSkill(skill)"
       >
         <p>{{ skill.name }}</p>
       </div>
@@ -22,12 +22,11 @@
 </template>
 
 <script setup>
-import { ref, onBeforeMount, reactive } from "vue";
+import { ref } from "vue";
 import { useResumeStore } from "@/store/cvStore";
 
 const resumeStore = useResumeStore();
 const skillName = ref("");
-let skillList = reactive([]);
 
 const addSkill = () => {
   if (skillName.value !== "") {
@@ -36,14 +35,9 @@ const addSkill = () => {
   }
 };
 
-const removeSkill = (skill, index) => {
+const removeSkill = (skill) => {
   resumeStore.removeSkill(skill.name);
-  skillList.splice(index, 1);
 };
-
-onBeforeMount(() => {
-  skillList = resumeStore.currentResume.skills;
-});
 </script>
 
 <style lang="scss" scoped>

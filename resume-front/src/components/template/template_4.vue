@@ -1,7 +1,6 @@
 <template>
   <div class="template_4 fancy-cv-template">
     <header>
-      {{ newEducation }}
       <div class="header-content">
         <div class="header-photo" v-if="photoUrl || resume.photo">
           <img v-if="photoUrl" :src="photoUrl" alt="Image Preview" />

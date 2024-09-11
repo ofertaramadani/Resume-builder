@@ -129,13 +129,14 @@
         :enable-download="true"
         filename="Resume"
         :pdf-quality="2"
-        :manual-pagination="false"
+        :manual-pagination="true"
         pdf-format="a4"
         @hasGenerated="hasGenerated($event)"
         ref="html2Pdf"
       >
         <template v-slot:pdf-content>
           <component
+            style="font-family: 'Poppins', sans-serif"
             :is="chosenTemplate"
             :resumeDetails="resume"
             :photo="photo"
@@ -275,6 +276,22 @@ onMounted(async () => {
 <style lang="scss" scoped>
 @import "../assets/scss/index.scss";
 @import "../assets/scss/pages/createResumePage.scss";
+/* Add this at the bottom of your SCSS file */
+@media print {
+  html,
+  body {
+    width: 210mm; /* A4 width */
+    height: 297mm; /* A4 height */
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+  }
+
+  .break {
+    page-break-after: always;
+  }
+}
+
 .dark-bg::before {
   content: "";
   position: absolute;

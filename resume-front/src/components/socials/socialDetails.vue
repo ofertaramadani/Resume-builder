@@ -3,9 +3,9 @@
     <div class="socials__default">
       <div
         class="socials__social"
-        v-for="(link, index) in links"
+        v-for="(link, index) in resumeStore.currentResume.socials"
         :key="index"
-        @click="removeSocial(link, index)"
+        @click="removeSocial(link)"
       >
         <p>{{ link.name }}</p>
       </div>
@@ -26,12 +26,11 @@
 </template>
 
 <script setup>
-import { ref, reactive, onBeforeMount } from "vue";
+import { ref } from "vue";
 import { useResumeStore } from "@/store/cvStore";
 
 const resumeStore = useResumeStore();
 const socialLink = ref("");
-let links = reactive([]);
 
 const addSocial = () => {
   if (socialLink.value !== "") {
@@ -39,14 +38,10 @@ const addSocial = () => {
     socialLink.value = "";
   }
 };
-const removeSocial = (social, index) => {
-  resumeStore.removeSocial(social.name);
-  links.splice(index, 1);
-};
 
-onBeforeMount(() => {
-  links = resumeStore.currentResume.socials;
-});
+const removeSocial = (social) => {
+  resumeStore.removeSocial(social.name);
+};
 </script>
 
 <style lang="scss" scoped>

@@ -10,8 +10,10 @@ import { Social } from '../social/entities/social.entity';
 import { Skill } from '../skill/entities/skill.entity';
 
 @Module({
-  imports:[TypeOrmModule.forFeature([Cv, User, Experience, Education, Social, Skill])],
+  imports: [
+    TypeOrmModule.forFeature([Cv, User, Experience, Education, Social, Skill]),
+  ],
   providers: [CvService],
-  controllers: [CvController]
+  controllers: [CvController],
 })
 export class CvModule {}
